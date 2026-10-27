@@ -1,0 +1,36 @@
+# ---------------- Python ----------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# ---------------- Node（对外看板/分享包的临时环境） ----------------
+node_modules/
+package-lock.json
+
+# ---------------- 脚本输出（每次跑都会重新生成，不入库） ----------------
+out/
+output/
+outputs/
+share_pack/
+*.log
+
+# ---------------- 真实工程数据：含工程名与工程量，勿公开 ----------------
+# 指标库主库与一切备份/中间文件
+box-girder-index/data/*.json
+# 仅放行脱敏示例
+!box-girder-index/data/example_indicators.json
+# 设计院原始汇总表（Excel）
+*.xlsx
+*.xls
+!examples/*.xlsx
+
+# ---------------- 编辑器 / 系统 ----------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+.obsidian/workspace*.json
