@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>桥梁设计小工具 · 辉歌说</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:0;background:#f6f7f9;color:#1c2530;
+ font:15px/1.7 "Microsoft YaHei",system-ui,-apple-system,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:40px 22px 70px}
+h1{font-size:23px;margin:0 0 6px;font-weight:600;letter-spacing:.4px}
+.sub{color:#68737d;font-size:13.5px;margin-bottom:30px}
+.sub b{color:#2c62c9;font-weight:600}
+a.card{display:block;background:#fff;border-radius:10px;padding:19px 22px;margin-bottom:14px;
+ text-decoration:none;color:inherit;border:1px solid #e6eaef;
+ box-shadow:0 1px 3px rgba(20,40,70,.05);transition:.18s;border-left:4px solid #2c62c9}
+a.card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(20,40,70,.10);
+ border-left-color:#1a4ba8}
+a.card .t{font-size:16.5px;font-weight:600;margin-bottom:5px;color:#152233}
+a.card .d{font-size:13px;color:#68737d;line-height:1.6}
+a.card .go{font-size:12.5px;color:#2c62c9;margin-top:9px;font-weight:600}
+.tag{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:3px;
+ background:#eef4fd;color:#2c62c9;margin-left:7px;vertical-align:2px;font-weight:600}
+.tag.new{background:#eaf6ee;color:#1d7a44}
+.note{margin-top:28px;padding:14px 18px;background:#fff;border:1px solid #e6eaef;
+ border-radius:8px;font-size:12.5px;color:#68737d;line-height:1.75}
+.note b{color:#33475c}
+footer{margin-top:34px;text-align:center;color:#93a0ac;font-size:12px;line-height:1.9}
+</style></head><body><div class="wrap">
+<h1>桥梁设计小工具</h1>
+<div class="sub">打开即用，无需安装 · <b>辉歌说</b></div>
+
+<a class="card" href="index.html">
+  <div class="t">连续刚构箱梁构造尺寸速查</div>
+  <div class="d">输入主跨跨径，输出推荐根部梁高、跨中梁高、底宽与常用区间（P10~P90），并列出同跨径实桥对照。</div>
+  <div class="go">进入工具 →</div>
+</a>
+
+<a class="card" href="box-girder.html">
+  <div class="t">箱梁技术指标速查</div>
+  <div class="d">按跨径区间查预应力混凝土箱梁的砼含量（m³/m²）、钢绞线含量（kg/m²、kg/m³）与钢板含量统计摘要。</div>
+  <div class="go">进入工具 →</div>
+</a>
+
+<a class="card" href="github-guide.html" style="border-left-color:#1d7a44">
+  <div class="t">GitHub 建仓与 Pages 部署指南<span class="tag new">技术</span></div>
+  <div class="d">把本地脚本或单页 HTML 发布成可分享的在线工具：建库、SSH 认证、Pages 配置、敏感数据防护，含踩坑解法。</div>
+  <div class="go" style="color:#1d7a44">阅读文档 →</div>
+</a>
+
+<div class="note">
+  <b>关于数据</b>：页面中的工程名称、桥梁名称均已脱敏处理，仅保留跨径与构造尺寸规律，用于设计阶段快速比对参考。
+  结果为统计推荐值，<b>不能替代结构计算</b>，正式设计须经注册工程师复核。
+</div>
+
+<footer>
+  辉歌说 · 桥梁设计辅助工具<br>
+  数据来源：历年设计图纸与工程量汇总表整理
+</footer>
+</div></body></html>
