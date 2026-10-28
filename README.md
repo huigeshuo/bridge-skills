@@ -149,7 +149,8 @@ bridge-skills/
 │   └── example_data.json
 ├── tools/
 │   ├── md2html.py          ← 通用小工具：Markdown → 单文件 HTML
-│   └── make_qr_card.py     ← 通用小工具：网址 → 二维码 / 竖版分享卡片
+│   ├── make_qr_card.py     ← 通用小工具：网址 → 二维码 / 竖版分享卡片
+│   └── add_analytics.py    ← 通用小工具：给页面批量注入访问统计（GoatCounter）
 └── docs/                   ← GitHub Pages 站点
     ├── index.html          ← 连续刚构箱梁构造尺寸速查（在线版）
     ├── box-girder.html     ← 箱梁技术指标速查（在线版）
@@ -190,6 +191,22 @@ python tools/make_qr_card.py \
 | `--qr-only` | — | 只输出纯二维码，用于 PPT 或文章配图 |
 
 生成后建议先自己扫一次再发出去；若卡片被压缩到很小，二维码可能扫不出。
+
+## 加访问统计
+
+GitHub 自带的 Insights → Traffic 只统计**代码仓库页**的浏览与 clone，**不统计 Pages 站点的访问**。
+要看「有多少人真的打开了页面」，需要自己挂第三方统计。本仓库用 GoatCounter（免费、无 cookie）：
+
+```bash
+python tools/add_analytics.py --code 你的站点代码        # 默认处理 docs/*.html
+python tools/add_analytics.py --code 你的站点代码 --dry-run   # 只预览
+python tools/add_analytics.py --code 你的站点代码 --remove    # 全部撤掉
+```
+
+脚本是幂等的：已在页面里就跳过，站点代码变了会自动替换，不会出现两个账号各记一份。
+
+⚠️ `docs/index.html`（build.py 生成）、`docs/github-guide.html`（md2html.py 生成）都是**生成物**，
+重新生成会把统计脚本冲掉。所以养成习惯：**每次生成完页面，推送前跑一次本脚本**。
 
 ## 许可
 
