@@ -5,6 +5,7 @@
 
 **在线工具**（手机、电脑打开即用）
 
+- **工具总入口**：<https://huigeshuo.github.io/bridge-skills/tools.html> —— 一个链接覆盖下列全部工具
 - [连续刚构箱梁构造尺寸速查](https://huigeshuo.github.io/bridge-skills/) —— 输入主跨，出推荐梁高、底宽与技术指标
 - [箱梁技术指标速查](https://huigeshuo.github.io/bridge-skills/box-girder.html) —— 各跨径箱梁的砼 / 钢绞线含量统计摘要
 - [GitHub 建仓与 Pages 部署指南](https://huigeshuo.github.io/bridge-skills/github-guide.html) —— 本仓库是怎么发布成在线工具的完整流程
