@@ -3,7 +3,10 @@
 > 桥梁设计辅助技能集：**参数化出草图，Excel 出指标**。
 > 四个独立可用的 Python 脚本，同时内嵌 AI 助手（WorkBuddy / Claude Skill）的技能描述文件。
 
-**在线工具**：[连续刚构箱梁构造尺寸速查](https://huigeshuo.github.io/bridge-skills/) —— 输入主跨，出推荐梁高、底宽与技术指标
+**在线工具**（手机、电脑打开即用）
+
+- [连续刚构箱梁构造尺寸速查](https://huigeshuo.github.io/bridge-skills/) —— 输入主跨，出推荐梁高、底宽与技术指标
+- [箱梁技术指标速查](https://huigeshuo.github.io/bridge-skills/box-girder.html) —— 各跨径箱梁的砼 / 钢绞线含量统计摘要
 
 ## 包含什么
 
@@ -142,8 +145,9 @@ bridge-skills/
 │   ├── make_public.py
 │   ├── template.html
 │   └── example_data.json
-└── docs/
-    └── index.html          ← GitHub Pages 站点（连续刚构速查在线版）
+└── docs/                   ← GitHub Pages 站点
+    ├── index.html          ← 连续刚构箱梁构造尺寸速查（在线版）
+    └── box-girder.html     ← 箱梁技术指标速查（在线版）
 ```
 
 ## 许可

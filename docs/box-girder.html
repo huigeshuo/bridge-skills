@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>箱梁技术指标速查 · 辉歌说</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:26px 30px 40px;background:#f6f7f9;color:#1c2530;
+font:18px/1.7 "Microsoft YaHei",system-ui,sans-serif}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-size:28px;margin:0 0 4px;font-weight:600}
+h1 .brand{color:#3b7ddd;font-weight:500}
+.sub{color:#68737d;font-size:15px;margin:0 0 20px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.kpi{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:12px 20px;min-width:130px;flex:1}
+.kpi .k{font-size:14px;color:#68737d}
+.kpi .v{font-size:27px;font-weight:600;margin-top:1px;letter-spacing:-.4px}
+.kpi .u{font-size:14px;color:#8b949e;margin-left:4px;font-weight:400}
+.cards{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.card{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:16px 20px;min-width:300px;flex:1}
+.card .hd{font-size:17px;font-weight:600;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f2f5}
+.card .k{font-size:14px;color:#68737d;margin-top:10px}
+.card .v{font-size:34px;font-weight:600;margin-top:0;letter-spacing:-.5px}
+.card .u{font-size:14px;color:#8b949e;margin-left:5px;font-weight:400}
+.card .s{font-size:14px;color:#68737d;margin-top:3px}
+.panel{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:16px 18px;margin-bottom:18px}
+.panel h2{font-size:19px;margin:0 0 12px;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:17px}
+th,td{border-bottom:1px solid #eef1f4;padding:9px 12px;text-align:right;white-space:nowrap}
+th{background:#fafbfc;color:#4a5560;font-weight:600;font-size:15px}
+td.l,th.l{text-align:left}
+.legend{font-size:14px;color:#68737d;margin-top:10px}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px}
+.note{font-size:15px;color:#4a5560}
+.note ul{margin:6px 0 0;padding-left:22px}
+.note li{margin-bottom:4px}
+.qbar{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.qf{display:flex;flex-direction:column;gap:3px}
+.qf label{font-size:13px;color:#68737d}
+.qf input,.qf select{font-size:17px;padding:8px 10px;border:1px solid #d8dee6;border-radius:8px;background:#fff;color:#1c2530;min-height:40px}
+.qf input{width:104px}
+.qf .u{font-size:13px;color:#8b949e}
+.q button,#qGo{font-size:16px;padding:9px 20px;border:0;border-radius:8px;background:#3b7ddd;color:#fff;cursor:pointer;min-height:40px}
+#qGo:hover{background:#2f6ec4}
+.qpreset{font-size:14px;color:#68737d;margin-top:10px}
+.qpreset a{color:#2c62c9;text-decoration:none;margin-right:12px;white-space:nowrap}
+.qpreset a:hover{text-decoration:underline}
+.qout{margin-top:14px;font-size:16px;color:#4a5560}
+.qout .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.qout .box{background:#f7f9fc;border:1px solid #e3e7ec;border-radius:10px;padding:11px 16px;min-width:180px;flex:1}
+.qout .box .k{font-size:13px;color:#68737d}
+.qout .box .v{font-size:26px;font-weight:600;letter-spacing:-.4px}
+.qout .box .v small{font-size:14px;font-weight:400;color:#8b949e;margin-left:4px}
+.qout .box .s{font-size:13px;color:#68737d;margin-top:2px}
+.qout .warn{background:#fff6ee;border:1px solid #f2d9bd;color:#a34908;border-radius:8px;padding:9px 13px;font-size:14px;margin-top:10px}
+.qout .empty{color:#8b949e;font-size:15px;margin-top:8px}
+.qhint{font-size:13px;color:#8b949e;margin-top:12px;line-height:1.6}
+.foot{color:#98a1aa;font-size:13px;text-align:center;margin-top:22px}
+.scroll{max-height:520px;overflow:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:820px){
+ body{padding:16px 14px 28px;font-size:16px}
+ h1{font-size:22px}
+ .sub{font-size:13px;margin-bottom:14px}
+ .kpi{padding:10px 14px;min-width:104px}
+ .kpi .v{font-size:22px}.kpi .k{font-size:12px}
+ .card{padding:14px 16px;min-width:100%}
+ .card .v{font-size:30px}
+ .panel{padding:13px 14px;margin-bottom:14px}
+ .panel h2{font-size:16px;margin-bottom:9px}
+ table{font-size:15px}
+ th,td{padding:8px 9px}
+ .note{font-size:14px}
+ .qbar{gap:10px}
+ .qf input,.qf select{font-size:16px;min-height:42px}
+ .qf input{width:88px}
+ #qGo{width:100%;margin-top:4px}
+ .qout .box{min-width:100%}
+}
+</style></head><body>
+<noscript><div style="background:#fff4e5;border:1px solid #f0b357;color:#8a4b00;
+padding:14px 18px;margin-bottom:18px;border-radius:10px;font-size:16px;line-height:1.65">
+<b>⚠ 请用浏览器打开本页。</b><br>
+当前是用「文件预览」方式打开的，下面的速查功能是关着的（页面脚本没执行）。<br>
+<b>安卓</b>：文件管理里长按本文件 → 更多 → 「其他应用打开」→ 选 <b>夸克浏览器</b>（推荐）或 Chrome。<br>
+华为 / 鸿蒙手机若列表里没有浏览器，先装个夸克再回来选（自带浏览器打开本地文件会白屏）；<br>
+<b>iPhone</b>：在「文件」App 里长按本文件 → 分享 → 用 Safari 打开。
+</div></noscript>
+<div class="wrap">
+<h1>箱梁技术指标速查<span class="brand"> · 辉歌说</span></h1>
+<p class="sub" id="sub"></p>
+<div class="kpis" id="kpis"></div>
+<div class="panel q"><h2>经验值速查</h2>
+<div class="qbar">
+ <div class="qf"><label>最大跨径</label><input id="qL" type="number" step="0.5" value="30"><span class="u">m</span></div>
+ <div class="qf"><label>桥面宽度</label><input id="qW" type="number" step="0.5" value="10"><span class="u">m</span></div>
+ <div class="qf"><label>结构类型</label><select id="qT"></select></div>
+ <button id="qGo" type="button">查一下</button>
+</div>
+<div class="qpreset">常用：<a href="#" data-l="30" data-w="10">30m × 10m 匝道</a>
+<a href="#" data-l="30" data-w="25">30m × 25m 主线</a>
+<a href="#" data-l="30" data-w="33">30m × 33m 宽主线</a>
+<a href="#" data-l="40" data-w="16">40m × 16m</a></div>
+<div id="qOut" class="qout"></div>
+<div class="qhint">在样本里找跨径、桥宽都接近的联，给出中位值与 P25~P75 区间。样本不足时会自动放宽范围，<b>结果仅供参考，不作施工图依据</b>。</div></div>
+<div class="cards" id="cards"></div>
+<div class="panel"><h2>砼含量 — 最大跨径关系</h2>
+<svg id="scatter" width="100%" height="360"></svg>
+<div class="legend"><span class="dot" style="background:#3b7ddd"></span>现浇箱梁
+<span class="dot" style="background:#e8730c;margin-left:16px"></span>钢箱梁　｜　空心点 = 数据校核未通过，已排除出统计</div></div>
+<div class="panel"><h2>按最大跨径分档（砼 / 钢绞线含量中位值）</h2>
+<div class="scroll"><table id="band"></table></div></div>
+<div class="panel"><h2>各互通指标对比（中位值）</h2>
+<div class="scroll"><table id="route"></table></div></div>
+<div class="panel note"><h2>口径说明</h2><ul>
+<li><b>砼含量</b> = 砼数量 ÷ 桥梁面积（m³/m²）；<b>钢绞线含量</b>分别按桥面面积（kg/m²）与砼方量（kg/m³）给出。</li>
+<li>统计仅计入<b>通过自动校核</b>的记录；校核项含跨径和与联长是否一致、面积与跨径×宽度是否相符、指标是否越界等。</li>
+<li>本页为<b>统计摘要</b>，不含逐联明细，也不含工程名、桥名、互通名等可溯源信息。</li>
+<li>数值为已建成/在建工程实测汇总，仅供前期估算与方案比选参考，不作为施工图设计依据。</li>
+</ul></div>
+<div class="foot" id="foot"></div>
+</div>
+<script>
+const S={"generated": "2026-10-25", "overview": {"total": 92, "ok": 85, "pending": 7, "projects": 1, "routes": 6, "span_min": 17.0, "span_max": 68.0, "width_min": 9.0, "width_max": 49.87}, "cards": [{"name": "现浇箱梁", "type": "现浇箱梁", "n": 73, "conc": {"min": 0.64, "p25": 0.711, "median": 0.741, "p75": 0.793, "max": 1.164}, "strand_m2": {"min": 13.14, "p25": 18.453, "median": 19.981, "p75": 22.414, "max": 52.387}, "strand_m3": {"min": 12.298, "p25": 24.876, "median": 28.7, "p75": 30.861, "max": 56.331}, "plate": null}, {"name": "钢箱梁", "type": "钢箱梁", "n": 12, "conc": null, "strand_m2": null, "strand_m3": null, "plate": {"min": 454.19, "p25": 565.445, "median": 606.675, "p75": 648.153, "max": 742.59}}], "bands": [{"name": "20m以下", "type": "现浇箱梁", "n": 1, "conc": {"min": 0.678, "p25": 0.678, "median": 0.678, "p75": 0.678, "max": 0.678}, "strand_m2": {"min": 17.363, "p25": 17.363, "median": 17.363, "p75": 17.363, "max": 17.363}, "strand_m3": {"min": 25.619, "p25": 25.619, "median": 25.619, "p75": 25.619, "max": 25.619}, "plate": null}, {"name": "20~30m", "type": "现浇箱梁", "n": 23, "conc": {"min": 0.643, "p25": 0.693, "median": 0.738, "p75": 0.784, "max": 1.164}, "strand_m2": {"min": 13.14, "p25": 17.157, "median": 18.453, "p75": 20.518, "max": 44.891}, "strand_m3": {"min": 12.298, "p25": 22.164, "median": 25.013, "p75": 28.706, "max": 50.449}, "plate": null}, {"name": "30~40m", "type": "现浇箱梁", "n": 49, "conc": {"min": 0.64, "p25": 0.714, "median": 0.746, "p75": 0.816, "max": 1.071}, "strand_m2": {"min": 17.137, "p25": 19.377, "median": 20.88, "p75": 23.09, "max": 52.387}, "strand_m3": {"min": 19.228, "p25": 25.509, "median": 29.715, "p75": 31.707, "max": 56.331}, "plate": null}, {"name": "30~40m", "type": "钢箱梁", "n": 3, "conc": null, "strand_m2": null, "strand_m3": null, "plate": {"min": 598.47, "p25": 622.485, "median": 646.5, "p75": 649.805, "max": 653.11}}, {"name": "40m以上", "type": "钢箱梁", "n": 9, "conc": null, "strand_m2": null, "strand_m3": null, "plate": {"min": 454.19, "p25": 508.91, "median": 584.48, "p75": 635.86, "max": 742.59}}], "routes": [{"name": "LJ", "type": "现浇箱梁", "n": 6, "conc": {"min": 0.7, "p25": 0.734, "median": 0.745, "p75": 0.76, "max": 0.763}, "strand_m2": {"min": 17.845, "p25": 19.192, "median": 20.239, "p75": 22.065, "max": 22.399}, "strand_m3": {"min": 25.12, "p25": 25.377, "median": 27.179, "p75": 29.443, "max": 30.453}, "plate": null}, {"name": "QF", "type": "现浇箱梁", "n": 4, "conc": {"min": 0.64, "p25": 0.655, "median": 0.703, "p75": 0.754, "max": 0.779}, "strand_m2": {"min": 17.856, "p25": 18.824, "median": 19.502, "p75": 19.874, "max": 19.926}, "strand_m3": {"min": 23.925, "p25": 24.421, "median": 27.398, "p75": 30.416, "max": 31.035}, "plate": null}, {"name": "XCH", "type": "现浇箱梁", "n": 9, "conc": {"min": 0.643, "p25": 0.707, "median": 0.711, "p75": 0.717, "max": 0.777}, "strand_m2": {"min": 19.848, "p25": 21.361, "median": 22.273, "p75": 22.414, "max": 23.09}, "strand_m3": {"min": 29.715, "p25": 30.25, "median": 30.861, "p75": 31.048, "max": 31.707}, "plate": null}, {"name": "XJJ", "type": "现浇箱梁", "n": 6, "conc": {"min": 0.721, "p25": 0.735, "median": 0.751, "p75": 0.777, "max": 0.786}, "strand_m2": {"min": 17.668, "p25": 17.71, "median": 18.094, "p75": 18.545, "max": 21.46}, "strand_m3": {"min": 23.281, "p25": 23.859, "median": 24.365, "p75": 24.786, "max": 27.318}, "plate": null}, {"name": "YJJ", "type": "现浇箱梁", "n": 10, "conc": {"min": 0.693, "p25": 0.711, "median": 0.718, "p75": 0.735, "max": 0.758}, "strand_m2": {"min": 19.377, "p25": 19.895, "median": 20.124, "p75": 20.734, "max": 21.279}, "strand_m3": {"min": 26.272, "p25": 26.997, "median": 28.313, "p75": 28.933, "max": 29.949}, "plate": null}, {"name": "—", "type": "现浇箱梁", "n": 38, "conc": {"min": 0.643, "p25": 0.719, "median": 0.793, "p75": 0.909, "max": 1.164}, "strand_m2": {"min": 13.14, "p25": 17.953, "median": 19.958, "p75": 35.387, "max": 52.387}, "strand_m3": {"min": 12.298, "p25": 23.115, "median": 28.7, "p75": 38.043, "max": 56.331}, "plate": null}, {"name": "—", "type": "钢箱梁", "n": 12, "conc": null, "strand_m2": null, "strand_m3": null, "plate": {"min": 454.19, "p25": 565.445, "median": 606.675, "p75": 648.153, "max": 742.59}}], "points": [{"x": 30.0, "y": 0.918, "t": "现浇箱梁", "w": 1}, {"x": 32.01, "y": 0.91, "t": "现浇箱梁", "w": 0}, {"x": 33.5, "y": 0.93, "t": "现浇箱梁", "w": 0}, {"x": 24.5, "y": 1.164, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 1.071, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.975, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.911, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.908, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.93, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.911, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.911, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.816, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.808, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.93, "t": "现浇箱梁", "w": 0}, {"x": 28.4, "y": 0.89, "t": "现浇箱梁", "w": 0}, {"x": 23.25, "y": 2.11, "t": "现浇箱梁", "w": 1}, {"x": 28.88, "y": 0.793, "t": "现浇箱梁", "w": 0}, {"x": 27.0, "y": 0.801, "t": "现浇箱梁", "w": 0}, {"x": 25.0, "y": 0.786, "t": "现浇箱梁", "w": 0}, {"x": 23.0, "y": 0.793, "t": "现浇箱梁", "w": 0}, {"x": 31.0, "y": 0.809, "t": "现浇箱梁", "w": 0}, {"x": 31.0, "y": 0.848, "t": "现浇箱梁", "w": 0}, {"x": 18.5, "y": 0.626, "t": "现浇箱梁", "w": 1}, {"x": 18.5, "y": 0.626, "t": "现浇箱梁", "w": 1}, {"x": 18.5, "y": 0.642, "t": "现浇箱梁", "w": 1}, {"x": 17.0, "y": 0.678, "t": "现浇箱梁", "w": 0}, {"x": 20.0, "y": 0.643, "t": "现浇箱梁", "w": 0}, {"x": 20.0, "y": 0.643, "t": "现浇箱梁", "w": 0}, {"x": 20.0, "y": 0.643, "t": "现浇箱梁", "w": 0}, {"x": 18.5, "y": 0.124, "t": "现浇箱梁", "w": 1}, {"x": 30.0, "y": 0.752, "t": "现浇箱梁", "w": 0}, {"x": 26.6, "y": 0.746, "t": "现浇箱梁", "w": 0}, {"x": 26.6, "y": 0.674, "t": "现浇箱梁", "w": 0}, {"x": 26.36, "y": 0.909, "t": "现浇箱梁", "w": 1}, {"x": 27.0, "y": 0.738, "t": "现浇箱梁", "w": 0}, {"x": 27.0, "y": 0.77, "t": "现浇箱梁", "w": 0}, {"x": 22.0, "y": 0.728, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.705, "t": "现浇箱梁", "w": 0}, {"x": 27.0, "y": 0.719, "t": "现浇箱梁", "w": 0}, {"x": 26.2, "y": 0.72, "t": "现浇箱梁", "w": 0}, {"x": 25.0, "y": 0.718, "t": "现浇箱梁", "w": 0}, {"x": 20.0, "y": 0.656, "t": "现浇箱梁", "w": 0}, {"x": 20.0, "y": 0.668, "t": "现浇箱梁", "w": 0}, {"x": 30.5, "y": 0.759, "t": "现浇箱梁", "w": 0}, {"x": 30.2, "y": 0.853, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.779, "t": "现浇箱梁", "w": 0}, {"x": 31.0, "y": 0.64, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.66, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.746, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.733, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.742, "t": "现浇箱梁", "w": 0}, {"x": 27.6, "y": 0.783, "t": "现浇箱梁", "w": 0}, {"x": 27.6, "y": 0.76, "t": "现浇箱梁", "w": 0}, {"x": 35.0, "y": 0.786, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.721, "t": "现浇箱梁", "w": 0}, {"x": 27.0, "y": 0.739, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.717, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.643, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.711, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.643, "t": "现浇箱梁", "w": 0}, {"x": 31.0, "y": 0.707, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.707, "t": "现浇箱梁", "w": 0}, {"x": 35.0, "y": 0.777, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.715, "t": "现浇箱梁", "w": 0}, {"x": 32.0, "y": 0.736, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.762, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.7, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.763, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.755, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.733, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.711, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.741, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.714, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.727, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.738, "t": "现浇箱梁", "w": 0}, {"x": 29.5, "y": 0.711, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.758, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.721, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.704, "t": "现浇箱梁", "w": 0}, {"x": 30.0, "y": 0.693, "t": "现浇箱梁", "w": 0}], "samples": [{"s": 32.01, "w": 33.25, "c": 0.9099, "m2": 37.68, "m3": 41.42, "p": null, "t": "现浇箱梁"}, {"s": 33.5, "w": 34.06, "c": 0.9303, "m2": 35.62, "m3": 38.29, "p": null, "t": "现浇箱梁"}, {"s": 24.5, "w": 44.15, "c": 1.1638, "m2": 14.31, "m3": 12.3, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 45.23, "c": 1.0713, "m2": 20.6, "m3": 19.23, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 35.5, "c": 0.9752, "m2": 33.61, "m3": 34.46, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 33.5, "c": 0.9113, "m2": 36.17, "m3": 39.69, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 33.5, "c": 0.908, "m2": 37.27, "m3": 41.05, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 35.26, "c": 0.9298, "m2": 34.69, "m3": 37.31, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 33.5, "c": 0.9113, "m2": 36.17, "m3": 39.69, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 33.5, "c": 0.9113, "m2": 36.17, "m3": 39.69, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 33.66, "c": 0.8157, "m2": 41.65, "m3": 51.05, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 24.5, "c": 0.8083, "m2": 39.41, "m3": 48.75, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 25.92, "c": 0.93, "m2": 52.39, "m3": 56.33, "p": null, "t": "现浇箱梁"}, {"s": 28.4, "w": 29.19, "c": 0.8898, "m2": 44.89, "m3": 50.45, "p": null, "t": "现浇箱梁"}, {"s": 28.88, "w": 12.38, "c": 0.7926, "m2": 21.05, "m3": 26.57, "p": null, "t": "现浇箱梁"}, {"s": 27.0, "w": 14.63, "c": 0.8014, "m2": 16.61, "m3": 20.72, "p": null, "t": "现浇箱梁"}, {"s": 25.0, "w": 20.55, "c": 0.7861, "m2": 19.32, "m3": 24.57, "p": null, "t": "现浇箱梁"}, {"s": 23.0, "w": 10.83, "c": 0.7928, "m2": 16.69, "m3": 21.05, "p": null, "t": "现浇箱梁"}, {"s": 31.0, "w": 10.5, "c": 0.8092, "m2": 17.14, "m3": 21.18, "p": null, "t": "现浇箱梁"}, {"s": 31.0, "w": 9.57, "c": 0.8481, "m2": 18.81, "m3": 22.18, "p": null, "t": "现浇箱梁"}, {"s": 17.0, "w": 9.15, "c": 0.6777, "m2": 17.36, "m3": 25.62, "p": null, "t": "现浇箱梁"}, {"s": 20.0, "w": 9.25, "c": 0.643, "m2": 18.45, "m3": 28.7, "p": null, "t": "现浇箱梁"}, {"s": 20.0, "w": 9.25, "c": 0.643, "m2": 18.45, "m3": 28.7, "p": null, "t": "现浇箱梁"}, {"s": 20.0, "w": 9.25, "c": 0.643, "m2": 18.46, "m3": 28.71, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 9.76, "c": 0.7525, "m2": 24.49, "m3": 32.54, "p": null, "t": "现浇箱梁"}, {"s": 26.6, "w": 10.5, "c": 0.7461, "m2": 22.71, "m3": 30.44, "p": null, "t": "现浇箱梁"}, {"s": 26.6, "w": 12.59, "c": 0.6741, "m2": 19.0, "m3": 28.18, "p": null, "t": "现浇箱梁"}, {"s": 27.0, "w": 10.59, "c": 0.7377, "m2": 22.68, "m3": 30.75, "p": null, "t": "现浇箱梁"}, {"s": 27.0, "w": 10.5, "c": 0.77, "m2": 22.89, "m3": 29.73, "p": null, "t": "现浇箱梁"}, {"s": 22.0, "w": 16.3, "c": 0.7284, "m2": 14.95, "m3": 20.53, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 11.08, "c": 0.7051, "m2": 21.61, "m3": 30.65, "p": null, "t": "现浇箱梁"}, {"s": 27.0, "w": 9.0, "c": 0.7192, "m2": 17.93, "m3": 24.93, "p": null, "t": "现浇箱梁"}, {"s": 26.2, "w": 9.0, "c": 0.7203, "m2": 18.02, "m3": 25.01, "p": null, "t": "现浇箱梁"}, {"s": 25.0, "w": 9.06, "c": 0.7182, "m2": 17.63, "m3": 24.55, "p": null, "t": "现浇箱梁"}, {"s": 20.0, "w": 9.08, "c": 0.6559, "m2": 13.14, "m3": 20.04, "p": null, "t": "现浇箱梁"}, {"s": 20.0, "w": 9.0, "c": 0.6677, "m2": 13.27, "m3": 19.88, "p": null, "t": "现浇箱梁"}, {"s": 30.5, "w": 9.0, "c": 0.7588, "m2": 19.32, "m3": 25.46, "p": null, "t": "现浇箱梁"}, {"s": 30.2, "w": 9.0, "c": 0.8531, "m2": 19.31, "m3": 22.64, "p": null, "t": "现浇箱梁"}, {"s": 68.0, "w": 42.13, "c": null, "m2": null, "m3": null, "p": 742.6, "t": "钢箱梁"}, {"s": 50.0, "w": 40.45, "c": null, "m2": null, "m3": null, "p": 584.5, "t": "钢箱梁"}, {"s": 50.0, "w": 33.34, "c": null, "m2": null, "m3": null, "p": 584.3, "t": "钢箱梁"}, {"s": 61.0, "w": 24.5, "c": null, "m2": null, "m3": null, "p": 686.7, "t": "钢箱梁"}, {"s": 45.0, "w": 33.16, "c": null, "m2": null, "m3": null, "p": 614.9, "t": "钢箱梁"}, {"s": 40.0, "w": 10.5, "c": null, "m2": null, "m3": null, "p": 635.9, "t": "钢箱梁"}, {"s": 59.0, "w": 9.08, "c": null, "m2": null, "m3": null, "p": 468.6, "t": "钢箱梁"}, {"s": 30.0, "w": 9.33, "c": null, "m2": null, "m3": null, "p": 653.1, "t": "钢箱梁"}, {"s": 36.5, "w": 9.31, "c": null, "m2": null, "m3": null, "p": 598.5, "t": "钢箱梁"}, {"s": 59.0, "w": 9.02, "c": null, "m2": null, "m3": null, "p": 508.9, "t": "钢箱梁"}, {"s": 36.0, "w": 9.0, "c": null, "m2": null, "m3": null, "p": 646.5, "t": "钢箱梁"}, {"s": 45.0, "w": 16.25, "c": null, "m2": null, "m3": null, "p": 454.2, "t": "钢箱梁"}, {"s": 30.0, "w": 18.89, "c": 0.7787, "m2": 19.15, "m3": 24.59, "p": null, "t": "现浇箱梁"}, {"s": 31.0, "w": 9.0, "c": 0.6398, "m2": 19.86, "m3": 31.04, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 9.0, "c": 0.6596, "m2": 19.93, "m3": 30.21, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 17.67, "c": 0.7463, "m2": 17.86, "m3": 23.93, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 26.6, "c": 0.7328, "m2": 17.74, "m3": 24.21, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 27.11, "c": 0.7415, "m2": 18.44, "m3": 24.88, "p": null, "t": "现浇箱梁"}, {"s": 27.6, "w": 23.16, "c": 0.7826, "m2": 18.58, "m3": 23.74, "p": null, "t": "现浇箱梁"}, {"s": 27.6, "w": 28.38, "c": 0.7602, "m2": 17.7, "m3": 23.28, "p": null, "t": "现浇箱梁"}, {"s": 35.0, "w": 22.45, "c": 0.7856, "m2": 21.46, "m3": 27.32, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 24.48, "c": 0.7207, "m2": 17.67, "m3": 24.52, "p": null, "t": "现浇箱梁"}, {"s": 27.0, "w": 10.5, "c": 0.7392, "m2": 22.36, "m3": 30.25, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 10.5, "c": 0.7174, "m2": 22.27, "m3": 31.05, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 9.0, "c": 0.6432, "m2": 19.85, "m3": 30.86, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 10.5, "c": 0.7114, "m2": 22.49, "m3": 31.62, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 9.0, "c": 0.6432, "m2": 19.85, "m3": 30.86, "p": null, "t": "现浇箱梁"}, {"s": 31.0, "w": 10.5, "c": 0.7069, "m2": 22.41, "m3": 31.71, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 10.12, "c": 0.7068, "m2": 21.36, "m3": 30.22, "p": null, "t": "现浇箱梁"}, {"s": 35.0, "w": 10.5, "c": 0.777, "m2": 23.09, "m3": 29.71, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 9.75, "c": 0.7147, "m2": 22.12, "m3": 30.95, "p": null, "t": "现浇箱梁"}, {"s": 32.0, "w": 10.5, "c": 0.7355, "m2": 22.4, "m3": 30.45, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 24.55, "c": 0.7622, "m2": 19.15, "m3": 25.12, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 24.14, "c": 0.6996, "m2": 17.84, "m3": 25.51, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 28.57, "c": 0.763, "m2": 19.33, "m3": 25.33, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 10.5, "c": 0.7547, "m2": 22.37, "m3": 29.64, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 10.23, "c": 0.7331, "m2": 21.15, "m3": 28.85, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 10.16, "c": 0.7105, "m2": 21.28, "m3": 29.95, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 13.16, "c": 0.7413, "m2": 19.87, "m3": 26.8, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 11.46, "c": 0.7137, "m2": 20.69, "m3": 28.99, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 14.81, "c": 0.7268, "m2": 19.49, "m3": 26.81, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 14.84, "c": 0.7375, "m2": 19.38, "m3": 26.27, "p": null, "t": "现浇箱梁"}, {"s": 29.5, "w": 10.79, "c": 0.7109, "m2": 19.98, "m3": 28.11, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 14.81, "c": 0.7579, "m2": 20.88, "m3": 27.55, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 11.32, "c": 0.7214, "m2": 20.75, "m3": 28.76, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 11.71, "c": 0.704, "m2": 20.08, "m3": 28.52, "p": null, "t": "现浇箱梁"}, {"s": 30.0, "w": 12.31, "c": 0.6926, "m2": 20.17, "m3": 29.12, "p": null, "t": "现浇箱梁"}]};
+const f=(v,n=2)=>(v==null||v==='')?'—':(+v).toFixed(n);
+const col=t=>t==='钢箱梁'?'#e8730c':t==='预制箱梁'?'#8b949e':'#3b7ddd';
+const o=S.overview;
+document.getElementById('sub').textContent =
+  `样本 ${o.total} 条（有效 ${o.ok} · 待核 ${o.pending}） · ${o.projects} 个工程 / ${o.routes} 个互通 · 自动生成于 ${S.generated}`;
+document.getElementById('foot').textContent =
+  `箱梁技术指标速查 · 辉歌说 · ${S.generated}`;
+
+// KPI 条
+const kpis=[
+ ['样本总量', o.total, '条'],
+ ['有效样本', o.ok, '条'],
+ ['校核剔除', o.pending, '条'],
+ ['跨径范围', (f(o.span_min,0)+'~'+f(o.span_max,0)), 'm'],
+ ['桥宽范围', (f(o.width_min,1)+'~'+f(o.width_max,1)), 'm'],
+];
+const kc=document.getElementById('kpis');
+kpis.forEach(function(a){
+ kc.insertAdjacentHTML('beforeend',
+  `<div class="kpi"><div class="k">${a[0]}</div><div class="v">${a[1]}<span class="u">${a[2]}</span></div></div>`);
+});
+
+// 统计卡片
+const cc=document.getElementById('cards');
+S.cards.forEach(function(c){
+ const isSteel = !c.conc && c.plate;
+ let body = '';
+ if (isSteel) {
+  body = `<div class="k">钢板含量中位</div>
+   <div class="v">${f(c.plate.median,0)}<span class="u">kg/m²</span></div>
+   <div class="s">区间 ${f(c.plate.min,0)} ~ ${f(c.plate.max,0)} kg/m² · 钢箱梁无预应力</div>`;
+ } else {
+  const cr=c.conc, s2=c.strand_m2, s3=c.strand_m3;
+  body = `<div class="k">砼含量中位</div>
+   <div class="v">${f(cr.median,3)}<span class="u">m³/m²</span></div>
+   <div class="s">P25 ${f(cr.p25,3)} · P75 ${f(cr.p75,3)} · 区间 ${f(cr.min,3)}~${f(cr.max,3)}</div>
+   <div class="k">钢绞线（按桥面面积）</div>
+   <div class="v">${f(s2.median,1)}<span class="u">kg/m²</span></div>
+   <div class="s">P25 ${f(s2.p25,1)} · P75 ${f(s2.p75,1)} · 区间 ${f(s2.min,1)}~${f(s2.max,1)}</div>
+   <div class="k">钢绞线（按砼方量）</div>
+   <div class="v">${f(s3.median,1)}<span class="u">kg/m³</span></div>
+   <div class="s">P25 ${f(s3.p25,1)} · P75 ${f(s3.p75,1)} · 区间 ${f(s3.min,1)}~${f(s3.max,1)}</div>`;
+ }
+ cc.insertAdjacentHTML('beforeend',
+  `<div class="card"><div class="hd">${c.type} · 样本 ${c.n} 联</div>${body}</div>`);
+});
+
+// 散点
+(function(){
+ const svg=document.getElementById('scatter');
+ const W=Math.max(700, svg.clientWidth||980), H=360, P={l:62,r:22,t:16,b:42};
+ const pts=S.points;
+ if(!pts.length){svg.innerHTML='';return;}
+ const x1=Math.max.apply(null, pts.map(function(d){return d.x;}))*1.08;
+ const y1=Math.max.apply(null, pts.map(function(d){return d.y;}))*1.15;
+ const sx=function(v){return P.l+(v-0)/(x1-0)*(W-P.l-P.r);};
+ const sy=function(v){return H-P.b-(v-0)/(y1-0)*(H-P.t-P.b);};
+ let s='';
+ for(let i=0;i<=4;i++){
+  const v=y1*i/4, y=sy(v);
+  s+='<line x1="'+P.l+'" y1="'+y+'" x2="'+(W-P.r)+'" y2="'+y+'" stroke="#eef1f4"/>';
+  s+='<text x="'+(P.l-10)+'" y="'+(y+5)+'" font-size="14" fill="#8b949e" text-anchor="end">'+v.toFixed(2)+'</text>';
+ }
+ for(let i=0;i<=5;i++){
+  const v=x1*i/5, x=sx(v);
+  s+='<text x="'+x+'" y="'+(H-14)+'" font-size="14" fill="#8b949e" text-anchor="middle">'+v.toFixed(0)+'</text>';
+ }
+ s+='<text x="'+(W/2)+'" y="'+(H-2)+'" font-size="14" fill="#68737d" text-anchor="middle">最大跨径 (m)</text>';
+ s+='<text x="16" y="'+((H-P.b)/2)+'" font-size="14" fill="#68737d" text-anchor="middle" transform="rotate(-90 16 '+((H-P.b)/2)+')">砼 m³/m²</text>';
+ pts.forEach(function(d){
+  s+='<circle cx="'+sx(d.x)+'" cy="'+sy(d.y)+'" r="'+(d.w?6:5.5)+'" fill="'+(d.w?'#fff':col(d.t))+
+      '" stroke="'+col(d.t)+'" stroke-width="'+(d.w?1.8:1.8)+'" opacity="0.9">'+
+      '<title>最大跨 '+f(d.x,1)+' m · 砼含量 '+f(d.y,3)+' m³/m²'+
+      (d.w?'（校核未通过）':'')+'</title></circle>';
+ });
+ svg.innerHTML=s;
+})();
+
+// 分档表
+(function(){
+ const t=document.getElementById('band');
+ let h='<thead><tr><th class="l">跨径档</th><th class="l">结构</th><th>样本</th><th>砼 m³/m²</th><th>钢绞线 kg/m²</th><th>钢绞线 kg/m³</th><th>钢板 kg/m²</th></tr></thead><tbody>';
+ S.bands.forEach(function(b){
+  const c1=b.conc?b.conc.median:null, c2=b.strand_m2?b.strand_m2.median:null,
+        c3=b.strand_m3?b.strand_m3.median:null, c4=b.plate?b.plate.median:null;
+  h+='<tr><td class="l"><b>'+b.name+'</b></td><td class="l">'+b.type+'</td><td>'+b.n+
+     '</td><td>'+f(c1,3)+'</td><td>'+f(c2,1)+'</td><td>'+f(c3,1)+'</td><td>'+f(c4,0)+'</td></tr>';
+ });
+ h+='</tbody>';
+ t.innerHTML=h;
+})();
+
+// 互通对比表
+(function(){
+ const t=document.getElementById('route');
+ let h='<thead><tr><th class="l">互通</th><th class="l">结构</th><th>样本</th><th>砼 m³/m²</th><th>钢绞线 kg/m²</th><th>钢绞线 kg/m³</th><th>钢板 kg/m²</th></tr></thead><tbody>';
+ S.routes.forEach(function(r){
+  const c1=r.conc?r.conc.median:null, c2=r.strand_m2?r.strand_m2.median:null,
+        c3=r.strand_m3?r.strand_m3.median:null, c4=r.plate?r.plate.median:null;
+  h+='<tr><td class="l"><b>'+r.name+'</b></td><td class="l">'+r.type+'</td><td>'+r.n+
+     '</td><td>'+f(c1,3)+'</td><td>'+f(c2,1)+'</td><td>'+f(c3,1)+'</td><td>'+f(c4,0)+'</td></tr>';
+ });
+ h+='</tbody>';
+ t.innerHTML=h;
+})();
+
+// 经验值速查：按 跨径±dL、桥宽±dW 找相近样本，逐级放宽
+(function(){
+ const S2=(S.samples||[]).filter(function(d){return d.s!=null;});
+ const sel=document.getElementById('qT'), out=document.getElementById('qOut');
+ const types=[];
+ S2.forEach(function(d){ if(types.indexOf(d.t)<0) types.push(d.t); });
+ sel.innerHTML=types.map(function(t){return '<option>'+t+'</option>';}).join('');
+ if(types.length) sel.value=types[0];
+ const pct=function(a,q){ if(!a.length) return null;
+  const b=a.slice().sort(function(x,y){return x-y;});
+  const i=Math.min(b.length-1,Math.max(0,Math.round((b.length-1)*q)));
+  return b[i]; };
+ const med=function(a){ return pct(a,.5); };
+ function box(k,v,u,s){ return '<div class="box"><div class="k">'+k+'</div><div class="v">'+v+
+   '<small>'+u+'</small></div><div class="s">'+s+'</div></div>'; }
+ function run(){
+  const L=parseFloat(document.getElementById('qL').value);
+  const W=parseFloat(document.getElementById('qW').value);
+  const T=sel.value;
+  if(isNaN(L)||isNaN(W)){ out.innerHTML='<div class="empty">请填写跨径与桥宽。</div>'; return; }
+  const pool=S2.filter(function(d){return d.t===T;});
+  const steps=[[5,3],[8,5],[12,8],[999,999]];
+  let hit=[], used=null;
+  for(const st of steps){
+   const sub=pool.filter(function(d){
+     return Math.abs(d.s-L)<=st[0] && (d.w==null? false : Math.abs(d.w-W)<=st[1]); });
+   if(sub.length>=5){ hit=sub; used=st; break; }
+   if(!hit.length){ hit=sub; used=st; }
+  }
+  if(!hit.length){
+   out.innerHTML='<div class="empty">没有跨径、桥宽都接近的样本，试试放宽条件或改用下面的统计卡片。</div>';
+   return;
+  }
+  const cc=hit.map(function(d){return d.c;}).filter(function(v){return v!=null;});
+  const m2=hit.map(function(d){return d.m2;}).filter(function(v){return v!=null&&v>0;});
+  const m3=hit.map(function(d){return d.m3;}).filter(function(v){return v!=null&&v>0;});
+  const pp=hit.map(function(d){return d.p;}).filter(function(v){return v!=null&&v>0;});
+  let h='<div>命中 <b>'+hit.length+'</b> 联'+
+    (used&&used[0]!==999? '（跨径 ±'+used[0]+'m、桥宽 ±'+used[1]+'m 内）':'（全库同类型）')+
+    ' · 结构 '+T+'</div><div class="row">';
+  if(cc.length) h+=box('砼含量中位',f(med(cc),3),'m³/m²','P25 '+f(pct(cc,.25),3)+' ~ P75 '+f(pct(cc,.75),3));
+  if(m2.length) h+=box('钢绞线（按面积）',f(med(m2),1),'kg/m²','P25 '+f(pct(m2,.25),1)+' ~ P75 '+f(pct(m2,.75),1));
+  if(m3.length) h+=box('钢绞线（按方量）',f(med(m3),1),'kg/m³','P25 '+f(pct(m3,.25),1)+' ~ P75 '+f(pct(m3,.75),1));
+  if(pp.length) h+=box('钢板含量中位',f(med(pp),0),'kg/m²','P25 '+f(pct(pp,.25),0)+' ~ P75 '+f(pct(pp,.75),0));
+  h+='</div>';
+  if(hit.length<8) h+='<div class="warn">样本偏少（'+hit.length+' 联），离散度大，仅作量级参考。</div>';
+  out.innerHTML=h;
+ }
+ document.getElementById('qGo').addEventListener('click',run);
+ ['qL','qW'].forEach(function(id){
+  document.getElementById(id).addEventListener('input',run);
+  document.getElementById(id).addEventListener('change',run);
+ });
+ sel.addEventListener('change',run);
+ const ps=document.querySelectorAll('.qpreset a');
+ for(let i=0;i<ps.length;i++){
+  ps[i].onclick=function(e){
+   e.preventDefault();
+   document.getElementById('qL').value=this.getAttribute('data-l');
+   document.getElementById('qW').value=this.getAttribute('data-w');
+   run();
+  };
+ }
+ run();
+})();
+</script></body></html>
