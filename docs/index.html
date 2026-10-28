@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>连续刚构箱梁构造尺寸速查</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:26px 30px 60px;background:#f6f7f9;color:#1c2530;
+ font:14px/1.65 "Microsoft YaHei",system-ui,-apple-system,sans-serif}
+h1{font-size:22px;margin:0 0 4px;font-weight:600;letter-spacing:.3px}
+.sub{color:#68737d;font-size:13px}
+.sub b{color:#2c62c9;font-weight:600}
+.wrap{max-width:1240px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:16px}
+
+/* 查询区 */
+.query{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:16px 18px;margin-bottom:16px;
+ box-shadow:0 1px 2px rgba(28,37,48,.04)}
+.qrow{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;color:#68737d}
+.inp{display:flex;align-items:center;border:1px solid #cfd6de;border-radius:8px;background:#fff;overflow:hidden}
+.inp:focus-within{border-color:#3b7ddd;box-shadow:0 0 0 3px rgba(59,125,221,.12)}
+.inp input{border:0;outline:0;font:600 20px/1 "Microsoft YaHei",system-ui;width:104px;padding:9px 4px 9px 12px;color:#1c2530}
+.inp input.w{font-size:15px;font-weight:500;width:74px;padding:10px 4px 10px 10px}
+.inp .u{padding:0 11px 0 2px;color:#8b949e;font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid #dfe4ea;background:#fff;color:#41505e;border-radius:14px;padding:3px 10px;
+ font-size:12px;cursor:pointer;transition:.15s}
+.chip:hover{border-color:#3b7ddd;color:#2c62c9;background:#f4f8ff}
+.chip.on{background:#3b7ddd;border-color:#3b7ddd;color:#fff}
+.len{flex:1;min-width:220px}
+.slider{width:100%;margin:6px 0 0;accent-color:#3b7ddd}
+.hint{font-size:12px;color:#8b949e;margin-top:8px}
+.hint b{color:#4a5560}
+
+/* 卡片 */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e3e7ec;border-radius:10px;padding:13px 15px}
+.card .k{font-size:12px;color:#68737d;display:flex;justify-content:space-between;gap:6px}
+.card .v{font-size:25px;font-weight:600;margin-top:3px;color:#16202b;letter-spacing:.2px}
+.card .v small{font-size:13px;font-weight:500;color:#68737d;margin-left:3px}
+.card .d{font-size:11.5px;color:#8b949e;margin-top:3px}
+.card.hi{background:linear-gradient(180deg,#f7fbff,#fff);border-color:#cfe1f8}
+.card.hi .v{color:#20559c}
+
+.panel{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:15px 18px 17px;margin-bottom:16px}
+.panel h2{font-size:15px;margin:0 0 12px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.panel h2 .n{font-size:11.5px;color:#8b949e;font-weight:400}
+.panel h2 .r{margin-left:auto;font-size:12px;font-weight:400;color:#68737d}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{border-bottom:1px solid #eef1f4;padding:6px 8px;text-align:right;white-space:nowrap}
+th{background:#fafbfc;color:#4a5560;font-weight:600}
+td.l,th.l{text-align:left}
+tbody tr:hover td{background:#f3f8ff}
+tr.warn td{background:#fff8f2}
+tr.warn:hover td{background:#fff2e6}
+tr.hit td{background:#f2f8ff!important}
+tr.hit td:first-child{box-shadow:inset 3px 0 0 #3b7ddd}
+.xscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:6px}
+.scroll{max-height:640px;overflow:auto;-webkit-overflow-scrolling:touch;border-radius:6px}
+.scroll thead th{position:sticky;top:0;z-index:2}
+.tag{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;background:#eef4ff;color:#2c62c9;white-space:nowrap}
+.tag.g{background:#eafaf0;color:#1a7f4b}
+.tag.w{background:#fff1e6;color:#b35309}
+.tag.d{background:#f2f4f7;color:#68737d}
+.mono{font-variant-numeric:tabular-nums}
+.small{font-size:12px;color:#68737d}
+.bar{position:relative;height:6px;background:#eef1f5;border-radius:3px;min-width:64px}
+.bar i{position:absolute;top:0;bottom:0;background:#8fbcf0;border-radius:3px}
+.bar b{position:absolute;top:-2px;bottom:-2px;width:2px;background:#20559c}
+.car{display:inline-block;width:12px;color:#c3cad1;font-size:9px;vertical-align:1px}
+tr.open .car{color:#3b7ddd}
+tr.rec{cursor:pointer}
+tr.sub td{background:#fcfdfe;border-bottom:1px solid #eef1f4;color:#8b949e;font-size:11.5px;
+ padding-top:0;padding-bottom:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0}
+tr.det td{background:#fbfcfe;border-bottom:1px solid #e3e7ec;padding:0;text-align:left;white-space:normal}
+.dbox{padding:9px 14px 11px;text-align:left;white-space:normal}
+tr.det:hover td{background:#fbfcfe}
+.dsec{font-size:12px;color:#4a5560;padding:1px 0;line-height:1.9;white-space:normal}
+.dsec b{color:#9aa4ae;font-weight:400;margin-right:1px}
+.dt{display:inline-block;min-width:66px;color:#c3cad1;font-size:11px}
+.warnbox{color:#b35309}
+.infobox{color:#8b949e;font-size:11.5px}
+.legend{font-size:12px;color:#68737d;margin-top:9px;display:flex;gap:16px;flex-wrap:wrap}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:900px){.charts{grid-template-columns:1fr}}
+.note{font-size:12px;color:#68737d;background:#fafbfc;border:1px solid #eef1f4;border-radius:8px;padding:9px 12px;margin-top:12px}
+.note b{color:#b35309}
+footer{color:#9aa4ae;font-size:11.5px;text-align:center;margin-top:26px;line-height:1.9}
+@media(max-width:820px){
+ body{padding:14px 12px 40px;font-size:14px}
+ .qrow{gap:10px}
+ .len{flex:1 1 100%;min-width:0}
+ .field{flex:0 0 auto}
+ .chips{gap:5px}
+ .chip{padding:3px 9px}
+ .panel{padding:13px 12px 14px}
+ table{font-size:12px}
+ th,td{padding:6px 5px}
+ h1{font-size:19px}
+ .inp input{width:88px;font-size:18px}
+ .card .v{font-size:22px}
+ .scroll{max-height:60vh}
+ td,th{padding:6px}
+}
+</style></head><body><div class="wrap">
+
+<div class="top">
+ <div>
+  <h1>连续刚构箱梁 · 构造尺寸速查</h1>
+  <div class="sub" id="sub"></div>
+ </div>
+ <div class="sub" style="text-align:right">输入主跨 → 出构造尺寸 + 技术指标</div>
+</div>
+
+<div class="query">
+ <div class="qrow">
+  <div class="field">
+   <label>主跨跨径 L</label>
+   <div class="inp"><input id="L" type="number" min="30" max="300" step="1" value="100"><span class="u">m</span></div>
+  </div>
+  <div class="field">
+   <label>桥宽 B<span class="small">（可选）</span></label>
+   <div class="inp"><input id="B" class="w" type="number" min="6" max="40" step="0.5" placeholder="—"><span class="u">m</span></div>
+  </div>
+  <div class="field len">
+   <label>拖动快速选跨径</label>
+   <input id="sl" class="slider" type="range" min="30" max="240" step="1" value="100">
+   <div class="chips" id="chips"></div>
+  </div>
+ </div>
+ <div class="hint" id="hint"></div>
+</div>
+
+<div class="cards" id="cards"></div>
+
+<div class="panel">
+ <h2>推荐构造尺寸<span class="n">按全库连续刚构比值中位值换算，已取整到 5 cm</span>
+  <span class="r" id="recR"></span></h2>
+ <div class="xscroll"><table id="rec"></table></div>
+</div>
+
+<div class="panel">
+ <h2>技术指标参考<span class="n" id="bandName"></span></h2>
+ <div class="xscroll"><table id="ind"></table></div>
+ <div class="note" id="quant"></div>
+</div>
+
+<div class="panel">
+ <h2>同跨径实桥对照<span class="n">按 |Δ主跨| 排序，取最接近的 8 座</span></h2>
+ <div class="scroll"><table id="near"></table></div>
+</div>
+
+<div class="panel">
+ <h2>趋势：梁高 — 主跨<span class="n">左图纵轴 梁高 cm ｜ 右图纵轴 砼含量 m³/m² ｜ 虚线为经验带，竖线为当前主跨</span></h2>
+ <div class="charts">
+  <svg id="c1" viewBox="0 0 620 300" width="100%" height="300"></svg>
+  <svg id="c2" viewBox="0 0 620 300" width="100%" height="300"></svg>
+ </div>
+ <div class="legend">
+  <span><span class="dot" style="background:#3b7ddd"></span>根部梁高</span>
+  <span><span class="dot" style="background:#e8730c"></span>跨中梁高</span>
+  <span><span class="dot" style="background:#9aa4ae"></span>砼含量</span>
+ </div>
+</div>
+
+<div class="panel">
+ <h2>全部实桥数据<span class="n" id="allN"></span><span class="n" style="color:#b9c1c9">← 可左右滑动 →</span>
+  <span class="r">
+   <select id="fSect" style="font:12px/1 'Microsoft YaHei';padding:4px 6px;border:1px solid #dfe4ea;border-radius:6px;background:#fff;color:#41505e">
+    <option value="">全部断面</option>
+   </select>
+   <label class="small" style="margin-left:8px;cursor:pointer"><input type="checkbox" id="fRF" checked> 仅连续刚构</label>
+  </span></h2>
+ <div class="scroll"><table id="all"></table></div>
+</div>
+
+<div class="note" style="margin-top:0">
+ <b>口径与用法</b>：主跨、桥宽单位 m；梁高、板厚、悬臂、底宽单位 cm；含量指标按「砼 m³ ÷ 桥梁面积 m²」「钢束 kg ÷ 桥梁面积 m² / ÷ 砼 m³」计。<br>
+ 「推荐值」= 全库比值中位值 × 输入主跨，取整到 5cm；「常用区间」为 P10~P90。<b>本工具用于方案阶段定尺寸，施工图须按结构验算与规范（JTG 3362-2018、JTG/T 3365-01-2020）复核。</b>
+</div>
+
+<footer>
+ 为便于对外交流，桥名以<b>拼音首字母代号</b>表示（幅别保留中文，同名加序号区分）；尺寸与工程量均为原表实测记录，未作修改。<br>
+ 生成于 2026-10-26 · 辉歌说
+</footer>
+</div>
+
+<script>
+const DB = {"meta":{"src":"本人参与设计的实桥技术总结（内部整理）","n_rows":34,"n_span":34,"n_quant":9,"n_qexcl":1,"n_flag":0,"n_clean":29,"n_lianxu":5,"k_root":{"p10":0.056,"med":0.06,"p90":0.062},"k_mid":{"p10":0.02,"med":0.025,"p90":0.03},"L_min":50.0,"L_max":220.0,"n_par":{"1.5":6,"2.0":3,"1.8":9,"1.6":1},"sect":{"单箱单室":23,"单箱双室":7,"单箱三室":1,"未注":3}},"stats":{"≤80":{"n":6,"nq":0,"k_root":{"p10":0.056,"med":0.058,"p90":0.062,"min":0.056,"max":0.0633,"n":6},"k_mid":{"p10":0.027,"med":0.03,"p90":0.034,"min":0.0267,"max":0.036,"n":6},"edge":{"p10":0.627,"med":0.627,"p90":0.627,"min":0.6267,"max":0.6267,"n":2},"r_root":{"p10":16.23,"med":17.14,"p90":17.86,"min":15.79,"max":17.86,"n":6},"r_mid":{"p10":29.275,"med":33.33,"p90":37.5,"min":27.78,"max":37.5,"n":6},"cant":{"p10":292.5,"med":375.0,"p90":425.0,"min":262.5,"max":425.0,"n":5},"t_cant":{"p10":65.0,"med":65.0,"p90":73.0,"min":65.0,"max":75.0,"n":5}},"80~120":{"n":12,"nq":6,"k_root":{"p10":0.056,"med":0.059,"p90":0.06,"min":0.05,"max":0.0625,"n":11},"k_mid":{"p10":0.025,"med":0.026,"p90":0.029,"min":0.025,"max":0.0295,"n":11},"edge":{"p10":0.555,"med":0.582,"p90":0.649,"min":0.5526,"max":0.6494,"n":8},"r_root":{"p10":16.67,"med":17.0,"p90":17.86,"min":16.0,"max":20.0,"n":11},"r_mid":{"p10":34.78,"med":38.4,"p90":40.0,"min":33.93,"max":40.0,"n":11},"cant":{"p10":270.0,"med":300.0,"p90":380.0,"min":250.0,"max":400.0,"n":9},"t_cant":{"p10":60.0,"med":75.0,"p90":89.5,"min":60.0,"max":100.0,"n":8},"conc_r":{"p10":0.979,"med":1.011,"p90":1.266,"n":6},"conc_m":{"p10":12.195,"med":14.26,"p90":22.495,"n":6},"strand_m2":{"p10":39.532,"med":45.257,"p90":56.141,"n":5},"strand_m3":{"p10":40.504,"med":47.833,"p90":53.866,"n":6},"rebar_m2":{"p10":189.188,"med":221.598,"p90":237.129,"n":4},"rebar_m3":{"p10":190.726,"med":221.567,"p90":249.164,"n":5}},"120~160":{"n":7,"nq":3,"k_root":{"p10":0.058,"med":0.06,"p90":0.061,"min":0.0542,"max":0.0607,"n":7},"k_mid":{"p10":0.019,"med":0.022,"p90":0.024,"min":0.0187,"max":0.0259,"n":7},"edge":{"p10":0.547,"med":0.561,"p90":0.606,"min":0.5417,"max":0.6458,"n":6},"r_root":{"p10":16.46,"med":16.67,"p90":17.386,"min":16.46,"max":18.46,"n":7},"r_mid":{"p10":41.144,"med":44.64,"p90":52.58,"min":38.57,"max":53.57,"n":7},"cant":{"p10":225.0,"med":250.0,"p90":290.0,"min":200.0,"max":300.0,"n":6},"t_cant":{"p10":64.0,"med":70.0,"p90":79.0,"min":60.0,"max":85.0,"n":5},"conc_r":{"p10":1.159,"med":1.271,"p90":1.29,"n":3},"conc_m":{"p10":10.962,"med":14.13,"p90":15.354,"n":3},"strand_m2":{"p10":55.328,"med":64.963,"p90":71.035,"n":3},"strand_m3":{"p10":47.671,"med":51.116,"p90":55.066,"n":3},"rebar_m2":{"p10":186.719,"med":245.638,"p90":257.569,"n":3},"rebar_m3":{"p10":160.363,"med":193.277,"p90":199.695,"n":3}},"≥160":{"n":4,"nq":0,"k_root":{"p10":0.061,"med":0.061,"p90":0.062,"min":0.0605,"max":0.0625,"n":4},"k_mid":{"p10":0.019,"med":0.022,"p90":0.022,"min":0.0184,"max":0.0227,"n":4},"edge":{"p10":0.557,"med":0.574,"p90":0.591,"min":0.5526,"max":0.5952,"n":2},"r_root":{"p10":16.09,"med":16.305,"p90":16.457,"min":16.0,"max":16.52,"n":4},"r_mid":{"p10":44.513,"med":46.19,"p90":52.004,"min":44.0,"max":54.29,"n":4},"cant":{"p10":220.0,"med":300.0,"p90":380.0,"min":200.0,"max":400.0,"n":2},"t_cant":{"p10":85.5,"med":87.5,"p90":89.5,"min":85.0,"max":90.0,"n":2}},"全部":{"n":29,"nq":9,"k_root":{"p10":0.056,"med":0.06,"p90":0.062,"min":0.05,"max":0.0633,"n":28},"k_mid":{"p10":0.02,"med":0.025,"p90":0.03,"min":0.0184,"max":0.036,"n":28},"edge":{"p10":0.552,"med":0.57,"p90":0.647,"min":0.5417,"max":0.6494,"n":18},"r_root":{"p10":16.21,"med":16.67,"p90":17.86,"min":15.79,"max":20.0,"n":28},"r_mid":{"p10":33.33,"med":39.29,"p90":50.576,"min":27.78,"max":54.29,"n":28},"cant":{"p10":250.0,"med":300.0,"p90":400.0,"min":200.0,"max":425.0,"n":22},"t_cant":{"p10":60.0,"med":70.0,"p90":85.5,"min":60.0,"max":100.0,"n":20},"conc_r":{"p10":0.987,"med":1.131,"p90":1.309,"n":9},"conc_m":{"p10":11.762,"med":14.13,"p90":22.15,"n":9},"strand_m2":{"p10":41.8,"med":51.535,"p90":67.24,"n":8},"strand_m3":{"p10":42.137,"med":50.543,"p90":56.011,"n":9},"rebar_m2":{"p10":175.902,"med":229.093,"p90":251.604,"n":7},"rebar_m3":{"p10":171.573,"med":204.13,"p90":238.786,"n":8}}},"stats_all":{"≤80":{"n":6,"nq":0,"k_root":{"p10":0.056,"med":0.058,"p90":0.062,"min":0.056,"max":0.0633,"n":6},"k_mid":{"p10":0.027,"med":0.03,"p90":0.034,"min":0.0267,"max":0.036,"n":6},"edge":{"p10":0.627,"med":0.627,"p90":0.627,"min":0.6267,"max":0.6267,"n":2},"r_root":{"p10":16.23,"med":17.14,"p90":17.86,"min":15.79,"max":17.86,"n":6},"r_mid":{"p10":29.275,"med":33.33,"p90":37.5,"min":27.78,"max":37.5,"n":6},"cant":{"p10":292.5,"med":375.0,"p90":425.0,"min":262.5,"max":425.0,"n":5},"t_cant":{"p10":65.0,"med":65.0,"p90":73.0,"min":65.0,"max":75.0,"n":5}},"80~120":{"n":12,"nq":6,"k_root":{"p10":0.056,"med":0.059,"p90":0.06,"min":0.05,"max":0.0625,"n":11},"k_mid":{"p10":0.025,"med":0.026,"p90":0.029,"min":0.025,"max":0.0295,"n":11},"edge":{"p10":0.555,"med":0.582,"p90":0.649,"min":0.5526,"max":0.6494,"n":8},"r_root":{"p10":16.67,"med":17.0,"p90":17.86,"min":16.0,"max":20.0,"n":11},"r_mid":{"p10":34.78,"med":38.4,"p90":40.0,"min":33.93,"max":40.0,"n":11},"cant":{"p10":270.0,"med":300.0,"p90":380.0,"min":250.0,"max":400.0,"n":9},"t_cant":{"p10":60.0,"med":75.0,"p90":89.5,"min":60.0,"max":100.0,"n":8},"conc_r":{"p10":0.979,"med":1.011,"p90":1.266,"n":6},"conc_m":{"p10":12.195,"med":14.26,"p90":22.495,"n":6},"strand_m2":{"p10":39.532,"med":45.257,"p90":56.141,"n":5},"strand_m3":{"p10":40.504,"med":47.833,"p90":53.866,"n":6},"rebar_m2":{"p10":189.188,"med":221.598,"p90":237.129,"n":4},"rebar_m3":{"p10":190.726,"med":221.567,"p90":249.164,"n":5}},"120~160":{"n":7,"nq":3,"k_root":{"p10":0.058,"med":0.06,"p90":0.061,"min":0.0542,"max":0.0607,"n":7},"k_mid":{"p10":0.019,"med":0.022,"p90":0.024,"min":0.0187,"max":0.0259,"n":7},"edge":{"p10":0.547,"med":0.561,"p90":0.606,"min":0.5417,"max":0.6458,"n":6},"r_root":{"p10":16.46,"med":16.67,"p90":17.386,"min":16.46,"max":18.46,"n":7},"r_mid":{"p10":41.144,"med":44.64,"p90":52.58,"min":38.57,"max":53.57,"n":7},"cant":{"p10":225.0,"med":250.0,"p90":290.0,"min":200.0,"max":300.0,"n":6},"t_cant":{"p10":64.0,"med":70.0,"p90":79.0,"min":60.0,"max":85.0,"n":5},"conc_r":{"p10":1.159,"med":1.271,"p90":1.29,"n":3},"conc_m":{"p10":10.962,"med":14.13,"p90":15.354,"n":3},"strand_m2":{"p10":55.328,"med":64.963,"p90":71.035,"n":3},"strand_m3":{"p10":47.671,"med":51.116,"p90":55.066,"n":3},"rebar_m2":{"p10":186.719,"med":245.638,"p90":257.569,"n":3},"rebar_m3":{"p10":160.363,"med":193.277,"p90":199.695,"n":3}},"≥160":{"n":4,"nq":0,"k_root":{"p10":0.061,"med":0.061,"p90":0.062,"min":0.0605,"max":0.0625,"n":4},"k_mid":{"p10":0.019,"med":0.022,"p90":0.022,"min":0.0184,"max":0.0227,"n":4},"edge":{"p10":0.557,"med":0.574,"p90":0.591,"min":0.5526,"max":0.5952,"n":2},"r_root":{"p10":16.09,"med":16.305,"p90":16.457,"min":16.0,"max":16.52,"n":4},"r_mid":{"p10":44.513,"med":46.19,"p90":52.004,"min":44.0,"max":54.29,"n":4},"cant":{"p10":220.0,"med":300.0,"p90":380.0,"min":200.0,"max":400.0,"n":2},"t_cant":{"p10":85.5,"med":87.5,"p90":89.5,"min":85.0,"max":90.0,"n":2}},"全部":{"n":29,"nq":9,"k_root":{"p10":0.056,"med":0.06,"p90":0.062,"min":0.05,"max":0.0633,"n":28},"k_mid":{"p10":0.02,"med":0.025,"p90":0.03,"min":0.0184,"max":0.036,"n":28},"edge":{"p10":0.552,"med":0.57,"p90":0.647,"min":0.5417,"max":0.6494,"n":18},"r_root":{"p10":16.21,"med":16.67,"p90":17.86,"min":15.79,"max":20.0,"n":28},"r_mid":{"p10":33.33,"med":39.29,"p90":50.576,"min":27.78,"max":54.29,"n":28},"cant":{"p10":250.0,"med":300.0,"p90":400.0,"min":200.0,"max":425.0,"n":22},"t_cant":{"p10":60.0,"med":70.0,"p90":85.5,"min":60.0,"max":100.0,"n":20},"conc_r":{"p10":0.987,"med":1.131,"p90":1.309,"n":9},"conc_m":{"p10":11.762,"med":14.13,"p90":22.15,"n":9},"strand_m2":{"p10":41.8,"med":51.535,"p90":67.24,"n":8},"strand_m3":{"p10":42.137,"med":50.543,"p90":56.011,"n":9},"rebar_m2":{"p10":175.902,"med":229.093,"p90":251.604,"n":7},"rebar_m3":{"p10":171.573,"med":204.13,"p90":238.786,"n":8}}},"rows":[{"row":2,"name":"LKDQ","spans_raw":"35+50+35","spans":[35.0,50.0,35.0],"L":50.0,"L_derive":false,"length":120.0,"B":12.5,"B_cm":1250.0,"sys":"连续刚构","sect":"单箱单室","h_root":300.0,"h_mid":180.0,"b_bot":null,"t_cant":null,"cant":null,"web":"","top":"","bot":"","n_par":null,"edge":null,"transv":"","note1":"","note2":"","pier_h":null,"pier":"2Φ160","pier_d":null,"blk0":null,"cap_t":null,"pile":"2Φ200","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":16.67,"k_root":0.06,"r_mid":27.78,"k_mid":0.036,"bad":false,"info":[]},{"row":3,"name":"FHDD（中幅）","spans_raw":"40+60+40","spans":[40.0,60.0,40.0],"L":60.0,"L_derive":false,"length":140.0,"B":16.5,"B_cm":1650.0,"sys":"连续梁","sect":"单箱双室","h_root":500.0,"h_mid":200.0,"b_bot":1150.0,"t_cant":50.0,"cant":250.0,"web":"","top":"","bot":"","n_par":null,"edge":0.6666666666666666,"transv":"N","note1":"","note2":"一次落架","pier_h":7.5,"pier":"400*220","pier_d":null,"blk0":null,"cap_t":null,"pile":"4Φ180","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":12.0,"k_root":0.0833,"r_mid":30.0,"k_mid":0.0333,"r_cant":5.0,"bad":false,"info":[]},{"row":4,"name":"FHDD（左幅）","spans_raw":"40+60+40","spans":[40.0,60.0,40.0],"L":60.0,"L_derive":false,"length":140.0,"B":13.25,"B_cm":1325.0,"sys":"连续梁","sect":"单箱双室","h_root":500.0,"h_mid":200.0,"b_bot":825.0,"t_cant":50.0,"cant":250.0,"web":"","top":"","bot":"","n_par":null,"edge":0.6666666666666666,"transv":"N","note1":"","note2":"一次落架","pier_h":7.5,"pier":"2*(180*220)","pier_d":null,"blk0":null,"cap_t":null,"pile":"4Φ150","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":12.0,"k_root":0.0833,"r_mid":30.0,"k_mid":0.0333,"r_cant":5.0,"bad":false,"info":[]},{"row":5,"name":"BH","spans_raw":"40+60+40","spans":[40.0,60.0,40.0],"L":60.0,"L_derive":false,"length":140.0,"B":17.5,"B_cm":1750.0,"sys":"连续梁","sect":"单箱三室","h_root":350.0,"h_mid":250.0,"b_bot":1250.0,"t_cant":60.0,"cant":250.0,"web":"","top":"","bot":"","n_par":null,"edge":0.6666666666666666,"transv":"N","note1":"","note2":"分2次施工","pier_h":null,"pier":"","pier_d":null,"blk0":null,"cap_t":null,"pile":"","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":17.14,"k_root":0.0583,"r_mid":24.0,"k_mid":0.0417,"r_cant":4.17,"bad":false,"info":[]},{"row":6,"name":"SXHZ4L","spans_raw":"35+60+35","spans":[35.0,60.0,35.0],"L":60.0,"L_derive":false,"length":130.0,"B":12.75,"B_cm":1275.0,"sys":"连续刚构","sect":"单箱单室","h_root":350.0,"h_mid":180.0,"b_bot":600.0,"t_cant":70.0,"cant":337.5,"web":"","top":"","bot":"","n_par":null,"edge":null,"transv":"Y","note1":"","note2":"墩梁临时固接、悬臂浇筑","pier_h":17.0,"pier":"600*200","pier_d":null,"blk0":null,"cap_t":null,"pile":"4Φ180","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":17.14,"k_root":0.0583,"r_mid":33.33,"k_mid":0.03,"r_cant":4.82,"bad":false,"info":[]},{"row":7,"name":"SXHY4L","spans_raw":"35+60+35","spans":[35.0,60.0,35.0],"L":60.0,"L_derive":false,"length":130.0,"B":14.5,"B_cm":1450.0,"sys":"连续刚构","sect":"单箱单室","h_root":350.0,"h_mid":180.0,"b_bot":700.0,"t_cant":75.0,"cant":375.0,"web":"","top":"","bot":"","n_par":null,"edge":null,"transv":"Y","note1":"","note2":"墩梁临时固接、悬臂浇筑","pier_h":null,"pier":"700*200","pier_d":null,"blk0":null,"cap_t":null,"pile":"","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":17.14,"k_root":0.0583,"r_mid":33.33,"k_mid":0.03,"r_cant":5.0,"bad":false,"info":[]},{"row":8,"name":"DCTDQ","spans_raw":"29+40+4x60+40","spans":[29.0,40.0,60.0,60.0,60.0,60.0,40.0],"L":60.0,"L_derive":true,"length":349.0,"B":12.25,"B_cm":1225.0,"sys":"连续刚构","sect":"单箱单室","h_root":380.0,"h_mid":195.0,"b_bot":700.0,"t_cant":65.0,"cant":262.5,"web":"","top":"","bot":"","n_par":null,"edge":null,"transv":"Y","note1":"","note2":"悬臂浇筑","pier_h":27.0,"pier":"700*300","pier_d":null,"blk0":null,"cap_t":null,"pile":"4Φ180","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":15.79,"k_root":0.0633,"r_mid":30.77,"k_mid":0.0325,"r_cant":4.04,"bad":false,"info":[]},{"row":9,"name":"MCHDQ（左幅）","spans_raw":"47+75+47","spans":[47.0,75.0,47.0],"L":75.0,"L_derive":false,"length":169.0,"B":16.5,"B_cm":1650.0,"sys":"连续刚构","sect":"单箱单室","h_root":420.0,"h_mid":200.0,"b_bot":800.0,"t_cant":65.0,"cant":425.0,"web":"40～50","top":"25","bot":"25～50","n_par":1.5,"edge":0.6266666666666667,"transv":"Y","note1":"","note2":"","pier_h":17.5,"pier":"2Φ200","pier_d":null,"blk0":null,"cap_t":3.0,"pile":"8Φ180","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":17.86,"k_root":0.056,"r_mid":37.5,"k_mid":0.0267,"r_cant":6.54,"bad":false,"info":[]},{"row":10,"name":"MCHDQ（右幅）","spans_raw":"47+75+47","spans":[47.0,75.0,47.0],"L":75.0,"L_derive":false,"length":169.0,"B":20.5,"B_cm":2050.0,"sys":"连续刚构","sect":"单箱双室","h_root":420.0,"h_mid":200.0,"b_bot":1200.0,"t_cant":65.0,"cant":425.0,"web":"40～50","top":"25","bot":"25～50","n_par":1.5,"edge":0.6266666666666667,"transv":"Y","note1":"","note2":"","pier_h":null,"pier":"","pier_d":null,"blk0":null,"cap_t":null,"pile":"","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":17.86,"k_root":0.056,"r_mid":37.5,"k_mid":0.0267,"r_cant":6.54,"bad":false,"info":[]},{"row":11,"name":"CDGDQ","spans_raw":"45+80+45","spans":[45.0,80.0,45.0],"L":80.0,"L_derive":false,"length":170.0,"B":16.75,"B_cm":1675.0,"sys":"连续刚构","sect":"单箱单室","h_root":450.0,"h_mid":200.0,"b_bot":null,"t_cant":null,"cant":400.0,"web":"45～65","top":"28","bot":"25～60","n_par":2.0,"edge":0.5625,"transv":"","note1":"","note2":"","pier_h":null,"pier":"","pier_d":null,"blk0":null,"cap_t":null,"pile":"","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":17.78,"k_root":0.0563,"r_mid":40.0,"k_mid":0.025,"bad":false,"info":[]},{"row":12,"name":"NG","spans_raw":"48+80+48","spans":[48.0,80.0,48.0],"L":80.0,"L_derive":true,"length":176.0,"B":15.5,"B_cm":1550.0,"sys":"连续刚构","sect":"单箱双室","h_root":480.0,"h_mid":230.0,"b_bot":null,"t_cant":null,"cant":null,"web":"","top":"","bot":"","n_par":null,"edge":null,"transv":"","note1":"","note2":"","pier_h":13.0,"pier":"600*250","pier_d":null,"blk0":null,"cap_t":null,"pile":"6Φ180","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":16.67,"k_root":0.06,"r_mid":34.78,"k_mid":0.0288,"bad":false,"info":[]},{"row":13,"name":"LK","spans_raw":"55+85+55","spans":[55.0,85.0,55.0],"L":85.0,"L_derive":false,"length":195.0,"B":12.5,"B_cm":1250.0,"sys":"连续刚构","sect":"单箱单室","h_root":500.0,"h_mid":225.0,"b_bot":null,"t_cant":null,"cant":null,"web":"","top":"","bot":"","n_par":null,"edge":null,"transv":"","note1":"","note2":"","pier_h":null,"pier":"650*180","pier_d":null,"blk0":null,"cap_t":300.0,"pile":"4Φ200","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":17.0,"k_root":0.0588,"r_mid":37.78,"k_mid":0.0265,"bad":false,"info":[]},{"row":14,"name":"HWDQ","spans_raw":"50+3×90+50","spans":[50.0,90.0,90.0,90.0,50.0],"L":90.0,"L_derive":false,"length":370.0,"B":12.0,"B_cm":1200.0,"sys":"连续刚构","sect":"单箱单室","h_root":520.0,"h_mid":240.0,"b_bot":600.0,"t_cant":85.0,"cant":300.0,"web":"40～60","top":"26","bot":"26～55","n_par":2.0,"edge":0.5555555555555556,"transv":"N","note1":"","note2":"","pier_h":68.0,"pier":"600*460","pier_d":null,"blk0":null,"cap_t":350.0,"pile":"4Φ220","pier_h2":35.0,"pier2":"600*400","cap2":"350","pile2":"4Φ220","area":4995.0,"conc":5092.35,"strand":220123.2,"rebar":null,"conc_r":1.0194894894894895,"strand_m3":43.22625114141801,"strand_m2":44.06870870870871,"rebar_m3":null,"rebar_m2":null,"noq":false,"info":["面积比「联长×桥宽」大 12%（含加宽段？）"],"r_root":17.31,"k_root":0.0578,"r_mid":37.5,"k_mid":0.0267,"r_cant":3.53,"conc_m":12.23,"bad":false},{"row":15,"name":"SXHYFD6L","spans_raw":"50+90+50","spans":[50.0,90.0,50.0],"L":90.0,"L_derive":true,"length":190.0,"B":null,"B_cm":null,"sys":"连续梁","sect":"","h_root":550.0,"h_mid":null,"b_bot":null,"t_cant":null,"cant":null,"web":"","top":"","bot":"","n_par":null,"edge":null,"transv":"","note1":"","note2":"","pier_h":null,"pier":"","pier_d":null,"blk0":null,"cap_t":null,"pile":"","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":16.36,"k_root":0.0611,"bad":false,"info":[]},{"row":16,"name":"ZBZHDYQ","spans_raw":"50+50+52.5+95+52.5","spans":[50.0,50.0,52.5,95.0,52.5],"L":95.0,"L_derive":false,"length":300.0,"B":14.95,"B_cm":1495.0,"sys":"连续刚构","sect":"单箱单室","h_root":550.0,"h_mid":280.0,"b_bot":800.0,"t_cant":100.0,"cant":350.0,"web":"50～70","top":"30","bot":"32～70","n_par":2.0,"edge":0.5526315789473685,"transv":"Y","note1":"95m主跨","note2":"","pier_h":40.0,"pier":"800*400","pier_d":null,"blk0":null,"cap_t":350.0,"pile":"9Φ200","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":8970.0,"conc":8667.8,"strand":327476.1,"rebar":1920500.0,"conc_r":0.9663099219620958,"strand_m3":37.78076328480122,"strand_m2":36.50792642140468,"rebar_m3":221.56717967650386,"rebar_m2":214.10256410256412,"noq":false,"info":["面积与砼按双幅统计（=联长×桥宽的 2.0 倍），含量指标不受影响"],"r_root":17.27,"k_root":0.0579,"r_mid":33.93,"k_mid":0.0295,"r_cant":3.5,"conc_m":14.45,"bad":false},{"row":17,"name":"TJEQ-1","spans_raw":"50+77+96+77+50","spans":[50.0,77.0,96.0,77.0,50.0],"L":96.0,"L_derive":false,"length":350.0,"B":23.0,"B_cm":2300.0,"sys":"连续刚构","sect":"单箱双室","h_root":600.0,"h_mid":250.0,"b_bot":1550.0,"t_cant":60.0,"cant":375.0,"web":"60～90","top":"30","bot":"30～80","n_par":1.8,"edge":0.6493506493506493,"transv":"Y","note1":"96m主跨","note2":"","pier_h":26.0,"pier":"1550*250","pier_d":null,"blk0":null,"cap_t":400.0,"pile":"8Φ200","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":8050.0,"conc":8074.1,"strand":364319.4,"rebar":1844199.1012113928,"conc_r":1.0029937888198759,"strand_m3":45.12198263583557,"strand_m2":45.25706832298137,"rebar_m3":228.4092470010766,"rebar_m2":229.0930560511047,"noq":false,"r_root":16.0,"k_root":0.0625,"r_mid":38.4,"k_mid":0.026,"r_cant":6.25,"conc_m":23.07,"bad":false,"info":[]},{"row":18,"name":"TJEQ-2","spans_raw":"50+77+96+77+50","spans":[50.0,77.0,96.0,77.0,50.0],"L":96.0,"L_derive":false,"length":350.0,"B":23.0,"B_cm":2300.0,"sys":"连续刚构","sect":"单箱双室","h_root":480.0,"h_mid":250.0,"b_bot":1550.0,"t_cant":60.0,"cant":375.0,"web":"60～90","top":"30","bot":"30～60","n_par":1.8,"edge":0.6493506493506493,"transv":"Y","note1":"77m主跨","note2":"","pier_h":24.0,"pier":"1550*200","pier_d":null,"blk0":null,"cap_t":400.0,"pile":"8Φ200","pier_h2":null,"pier2":"","cap2":"","pile2":"4Φ150","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":20.0,"k_root":0.05,"r_mid":38.4,"k_mid":0.026,"r_cant":6.25,"bad":false,"info":[]},{"row":19,"name":"CK","spans_raw":"60+100+60","spans":[60.0,100.0,60.0],"L":100.0,"L_derive":false,"length":220.0,"B":12.25,"B_cm":1225.0,"sys":"连续刚构","sect":"单箱单室","h_root":560.0,"h_mid":250.0,"b_bot":625.0,"t_cant":80.0,"cant":300.0,"web":"40～60","top":"26,50","bot":"26～80","n_par":null,"edge":0.6,"transv":"N","note1":"","note2":"","pier_h":null,"pier":"","pier_d":null,"blk0":null,"cap_t":null,"pile":"","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":5390.0,"conc":5348.24,"strand":270318.0,"rebar":962170.9999999999,"conc_r":0.9922523191094619,"strand_m3":50.54335631908815,"strand_m2":50.151762523191096,"rebar_m3":179.90423017665623,"rebar_m2":178.51038961038958,"noq":false,"info":["面积与砼按双幅统计（=联长×桥宽的 2.0 倍），含量指标不受影响"],"r_root":17.86,"k_root":0.056,"r_mid":40.0,"k_mid":0.025,"r_cant":3.75,"conc_m":12.16,"bad":false},{"row":20,"name":"YCYJDD","spans_raw":"60+100+60","spans":[60.0,100.0,60.0],"L":100.0,"L_derive":false,"length":220.0,"B":16.0,"B_cm":1600.0,"sys":"连续刚构","sect":"单箱单室","h_root":600.0,"h_mid":250.0,"b_bot":null,"t_cant":70.0,"cant":250.0,"web":"","top":"","bot":"","n_par":null,"edge":null,"transv":"N","note1":"","note2":"","pier_h":null,"pier":"","pier_d":null,"blk0":null,"cap_t":null,"pile":"","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":1.37,"strand_m3":56.0,"strand_m2":null,"rebar_m3":263.0,"rebar_m2":null,"noq":false,"r_root":16.67,"k_root":0.06,"r_mid":40.0,"k_mid":0.025,"r_cant":3.57,"conc_m":21.92,"bad":false,"info":[]},{"row":21,"name":"GSH","spans_raw":"63+110+63","spans":[63.0,110.0,63.0],"L":110.0,"L_derive":false,"length":236.0,"B":12.1,"B_cm":1210.0,"sys":"连续刚构","sect":"单箱单室","h_root":660.0,"h_mid":280.0,"b_bot":650.0,"t_cant":85.0,"cant":280.0,"web":"50～70","top":"28,50","bot":"32～80","n_par":1.5,"edge":0.5727272727272728,"transv":"N","note1":"","note2":"","pier_h":52.5,"pier":"650*430","pier_d":null,"blk0":1200.0,"cap_t":450.0,"pile":"4Φ250","pier_h2":47.0,"pier2":"650*350","cap2":"300","pile2":"4Φ180","area":5711.2,"conc":6638.8,"strand":343432.1,"rebar":1373961.2,"conc_r":1.162417705561003,"strand_m3":51.73105079231186,"strand_m2":60.13308936825886,"rebar_m3":206.95926974754474,"rebar_m2":240.57311948452164,"noq":false,"info":["面积与砼按双幅统计（=联长×桥宽的 2.0 倍），含量指标不受影响"],"r_root":16.67,"k_root":0.06,"r_mid":39.29,"k_mid":0.0255,"r_cant":3.29,"conc_m":14.07,"bad":false},{"row":22,"name":"HJB","spans_raw":"65+4*110+65","spans":[65.0,110.0,110.0,110.0,110.0,65.0],"L":110.0,"L_derive":false,"length":570.0,"B":12.0,"B_cm":1200.0,"sys":"连续刚构","sect":"单箱单室","h_root":650.0,"h_mid":280.0,"b_bot":650.0,"t_cant":70.0,"cant":275.0,"web":"","top":"28,40","bot":"28～70","n_par":1.5,"edge":0.5909090909090909,"transv":"Y","note1":"","note2":"","pier_h":84.0,"pier":"2*850*180","pier_d":830.0,"blk0":1200.0,"cap_t":400.0,"pile":"6Φ220","pier_h2":35.0,"pier2":"2Φ200","cap2":"250","pile2":"4Φ150","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":16.92,"k_root":0.0591,"r_mid":39.29,"k_mid":0.0255,"r_cant":3.93,"bad":false,"info":[]},{"row":23,"name":"FZ","spans_raw":"76.5+110+76.5","spans":[76.5,110.0,76.5],"L":110.0,"L_derive":true,"length":263.0,"B":16.5,"B_cm":1650.0,"sys":"连续刚构","sect":"单箱单室","h_root":null,"h_mid":null,"b_bot":null,"t_cant":null,"cant":null,"web":"","top":"","bot":"","n_par":null,"edge":null,"transv":"","note1":"","note2":"","pier_h":60.0,"pier":"2*300*350","pier_d":810.0,"blk0":1400.0,"cap_t":null,"pile":"4Φ250","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"bad":false,"info":[]},{"row":24,"name":"YN540+629","spans_raw":"65+120+65","spans":[65.0,120.0,65.0],"L":120.0,"L_derive":false,"length":250.0,"B":11.0,"B_cm":1100.0,"sys":"连续刚构","sect":"单箱单室","h_root":720.0,"h_mid":280.0,"b_bot":600.0,"t_cant":70.0,"cant":250.0,"web":"40～70","top":"28,45","bot":"30～100","n_par":1.8,"edge":0.5416666666666666,"transv":"N","note1":"","note2":"","pier_h":null,"pier":"1180*250","pier_d":810.0,"blk0":null,"cap_t":null,"pile":"12Φ200","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":16.67,"k_root":0.06,"r_mid":42.86,"k_mid":0.0233,"r_cant":3.57,"bad":false,"info":[]},{"row":25,"name":"SXHD5L","spans_raw":"68+120+68","spans":[68.0,120.0,68.0],"L":120.0,"L_derive":false,"length":256.0,"B":null,"B_cm":null,"sys":"连续梁","sect":"","h_root":700.0,"h_mid":null,"b_bot":null,"t_cant":null,"cant":null,"web":"","top":"","bot":"","n_par":null,"edge":null,"transv":"","note1":"","note2":"","pier_h":null,"pier":"","pier_d":null,"blk0":null,"cap_t":null,"pile":"","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":17.14,"k_root":0.0583,"bad":false,"info":[]},{"row":26,"name":"DSHDQ","spans_raw":"77.5+120+77.5","spans":[77.5,120.0,77.5],"L":120.0,"L_derive":false,"length":275.0,"B":17.0,"B_cm":1700.0,"sys":"连续刚构","sect":"单箱双室","h_root":650.0,"h_mid":280.0,"b_bot":1200.0,"t_cant":null,"cant":250.0,"flags":["底宽按 m 录入，已×100"],"web":"50～70","top":"28","bot":"30～100","n_par":1.8,"edge":0.6458333333333334,"transv":"","note1":"单肢双柱矩形墩","note2":"","pier_h":null,"pier":"2*400*350","pier_d":null,"blk0":null,"cap_t":null,"pile":"8Φ180","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":18.46,"k_root":0.0542,"r_mid":42.86,"k_mid":0.0233,"bad":false,"info":[]},{"row":27,"name":"ESDXGDQ","spans_raw":"69+125+69","spans":[69.0,125.0,69.0],"L":125.0,"L_derive":false,"length":263.0,"B":8.0,"B_cm":800.0,"sys":"连续刚构","sect":"单箱单室","h_root":750.0,"h_mid":280.0,"b_bot":400.0,"t_cant":60.0,"cant":200.0,"web":"40～55","top":"25","bot":"25～100","n_par":1.8,"edge":0.552,"transv":"N","note1":"","note2":"","pier_h":35.0,"pier":"2*400*200","pier_d":900.0,"blk0":1100.0,"cap_t":400.0,"pile":"6Φ200","pier_h2":18.0,"pier2":"470*150","cap2":"300","pile2":"4Φ150","area":2104.0,"conc":2674.0,"strand":136683.2,"rebar":516821.5,"conc_r":1.270912547528517,"strand_m3":51.115632011967094,"strand_m2":64.96349809885932,"rebar_m3":193.27655198204937,"rebar_m2":245.63759505703422,"noq":false,"r_root":16.67,"k_root":0.06,"r_mid":44.64,"k_mid":0.0224,"r_cant":3.33,"conc_m":10.17,"bad":false,"info":[]},{"row":28,"name":"LSJ","spans_raw":"75+135+75","spans":[75.0,135.0,75.0],"L":135.0,"L_derive":false,"length":285.0,"B":12.1,"B_cm":1210.0,"sys":"连续刚构","sect":"单箱单室","h_root":820.0,"h_mid":350.0,"b_bot":650.0,"t_cant":85.0,"cant":280.0,"web":"50～70","top":"28,50","bot":"32～100","n_par":1.5,"edge":0.5555555555555556,"transv":"N","note1":"","note2":"","pier_h":63.0,"pier":"650*500","pier_d":null,"blk0":null,"cap_t":500.0,"pile":"4Φ280","pier_h2":42.0,"pier2":"650*240","cap2":"300","pile2":"4Φ200","area":6897.0,"conc":8927.13,"strand":500397.4,"rebar":1797029.7,"conc_r":1.2943497172683773,"strand_m3":56.05355808641748,"strand_m2":72.55290706104104,"rebar_m3":201.2998242436259,"rebar_m2":260.55237059591127,"noq":false,"info":["面积与砼按双幅统计（=联长×桥宽的 2.0 倍），含量指标不受影响"],"r_root":16.46,"k_root":0.0607,"r_mid":38.57,"k_mid":0.0259,"r_cant":3.29,"conc_m":15.66,"bad":false},{"row":29,"name":"WYHDQ","spans_raw":"75+135+75","spans":[75.0,135.0,75.0],"L":135.0,"L_derive":false,"length":285.0,"B":10.0,"B_cm":1000.0,"sys":"连续刚构","sect":"单箱单室","h_root":820.0,"h_mid":260.0,"b_bot":600.0,"t_cant":null,"cant":null,"web":"","top":"","bot":"","n_par":1.8,"edge":null,"transv":"","note1":"","note2":"","pier_h":60.0,"pier":"2*600*300","pier_d":null,"blk0":null,"cap_t":null,"pile":"9Φ200","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"info":["原工程量口径不成立（面积按单幅、量按双幅），工程量暂缺"],"r_root":16.46,"k_root":0.0607,"r_mid":51.92,"k_mid":0.0193,"bad":false},{"row":30,"name":"YN538+858","spans_raw":"85+150+85","spans":[85.0,150.0,85.0],"L":150.0,"L_derive":false,"length":320.0,"B":11.0,"B_cm":1100.0,"sys":"连续刚构","sect":"单箱单室","h_root":900.0,"h_mid":300.0,"b_bot":600.0,"t_cant":70.0,"cant":250.0,"web":"40～70","top":"28,45","bot":"32～120","n_par":1.8,"edge":0.5666666666666667,"transv":"N","note1":"","note2":"","pier_h":56.0,"pier":"1180*250","pier_d":850.0,"blk0":1400.0,"cap_t":400.0,"pile":"12Φ200","pier_h2":19.0,"pier2":"1180*200","cap2":"300","pile2":"8Φ150","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":16.67,"k_root":0.06,"r_mid":50.0,"k_mid":0.02,"r_cant":3.57,"bad":false,"info":[]},{"row":31,"name":"BSCDQ","spans_raw":"85+2×150+85","spans":[85.0,150.0,150.0,85.0],"L":150.0,"L_derive":false,"length":470.0,"B":12.5,"B_cm":1250.0,"sys":"连续刚构","sect":"单箱单室","h_root":900.0,"h_mid":280.0,"b_bot":650.0,"t_cant":70.0,"cant":300.0,"web":"40～70","top":"28","bot":"32～100","n_par":1.8,"edge":0.5666666666666667,"transv":"Y","note1":"","note2":"","pier_h":72.0,"pier":"650*250","pier_d":1200.0,"blk0":1800.0,"cap_t":500.0,"pile":"6Φ250","pier_h2":63.0,"pier2":"680*350","cap2":"400","pile2":"4Φ200","area":11750.0,"conc":13283.4,"strand":621795.3,"rebar":2020867.8,"conc_r":1.1305021276595744,"strand_m3":46.809950765617245,"strand_m2":52.91874893617022,"rebar_m3":152.13482993811826,"rebar_m2":171.98874893617023,"noq":false,"info":["面积与砼按双幅统计（=联长×桥宽的 2.0 倍），含量指标不受影响"],"r_root":16.67,"k_root":0.06,"r_mid":53.57,"k_mid":0.0187,"r_cant":4.29,"conc_m":14.13,"bad":false},{"row":32,"name":"FSDQ","spans_raw":"88+160+88","spans":[88.0,160.0,88.0],"L":160.0,"L_derive":false,"length":336.0,"B":10.0,"B_cm":1000.0,"sys":"连续刚构","sect":"","h_root":1000.0,"h_mid":350.0,"b_bot":null,"t_cant":null,"cant":null,"web":"","top":"","bot":"","n_par":1.8,"edge":null,"transv":"","note1":"","note2":"","pier_h":null,"pier":"","pier_d":null,"blk0":null,"cap_t":null,"pile":"","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"info":["原工程量口径不成立（面积按单幅、量按双幅），工程量暂缺"],"r_root":16.0,"k_root":0.0625,"r_mid":45.71,"k_mid":0.0219,"bad":false},{"row":33,"name":"FJYLTDQ","spans_raw":"100+168+100","spans":[100.0,168.0,100.0],"L":168.0,"L_derive":false,"length":368.0,"B":16.5,"B_cm":1650.0,"sys":"连续刚构","sect":"单箱单室","h_root":1030.0,"h_mid":360.0,"b_bot":850.0,"t_cant":90.0,"cant":400.0,"web":"50～100","top":"28,60","bot":"30～100","n_par":1.6,"edge":0.5952380952380952,"transv":"","note1":"","note2":"","pier_h":null,"pier":"","pier_d":null,"blk0":null,"cap_t":null,"pile":"","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":16.31,"k_root":0.0613,"r_mid":46.67,"k_mid":0.0214,"r_cant":4.44,"bad":false,"info":[]},{"row":34,"name":"GEX","spans_raw":"105+190+105","spans":[105.0,190.0,105.0],"L":190.0,"L_derive":false,"length":400.0,"B":9.0,"B_cm":900.0,"sys":"连续刚构","sect":"单箱单室","h_root":1150.0,"h_mid":350.0,"b_bot":500.0,"t_cant":85.0,"cant":200.0,"web":"40～60","top":"25,40","bot":"30～100","n_par":1.5,"edge":0.5526315789473685,"transv":"Y","note1":"","note2":"","pier_h":83.0,"pier":"700*250","pier_d":980.0,"blk0":1400.0,"cap_t":450.0,"pile":"6Φ250","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":3600.0,"conc":5880.2,"strand":382792.6,"rebar":894122.6,"conc_r":1.6333888888888888,"strand_m3":65.09856807591578,"strand_m2":106.33127777777777,"rebar_m3":152.0564946770518,"rebar_m2":248.36738888888888,"noq":false,"info":["构造含 0# 块（不拆分），砼/钢束含量偏大，不与纯主梁记录同池统计；构造尺寸正常可用"],"r_root":16.52,"k_root":0.0605,"r_mid":54.29,"k_mid":0.0184,"r_cant":2.35,"conc_m":14.7,"q_excl":"构造含 0# 块（不拆分），砼/钢束含量偏大，不与纯主梁记录同池统计；构造尺寸正常可用","bad":false},{"row":35,"name":"HZHTDQ","spans_raw":"115+220+115","spans":[115.0,220.0,115.0],"L":220.0,"L_derive":false,"length":450.0,"B":13.0,"B_cm":1300.0,"sys":"连续刚构","sect":"单箱单室","h_root":1350.0,"h_mid":500.0,"b_bot":null,"t_cant":null,"cant":null,"web":"","top":"","bot":"","n_par":null,"edge":null,"transv":"","note1":"","note2":"50m双肢薄壁+82m箱形墩，横桥向50m以下1:45变宽。","pier_h":132.0,"pier":"（9-12.8）*13","pier_d":null,"blk0":null,"cap_t":null,"pile":"","pier_h2":null,"pier2":"","cap2":"","pile2":"","area":null,"conc":null,"strand":null,"rebar":null,"conc_r":null,"strand_m3":null,"strand_m2":null,"rebar_m3":null,"rebar_m2":null,"noq":true,"r_root":16.3,"k_root":0.0614,"r_mid":44.0,"k_mid":0.0227,"bad":false,"info":[]}]};
+const ROWS = DB.rows, META = DB.meta, ST = DB.stats, STA = DB.stats_all;
+const $ = s => document.querySelector(s);
+const nf = (v,d=0) => v==null||v===""||isNaN(v) ? "—" : (+v).toFixed(d);
+const m2 = v => nf(v,2);
+
+/* ---------- 基础：取同档统计 ---------- */
+function bandOf(L){
+  if (L < 80)  return "≤80";
+  if (L < 120) return "80~120";
+  if (L < 160) return "120~160";
+  return "≥160";
+}
+function stat(key, L){
+  const b = bandOf(L); const s = ST[b] || {};
+  const r = s[key] || {};
+  const all = (ST["全部"]||{})[key] || {};
+  return {med: r.med ?? all.med, p10: r.p10 ?? all.p10, p90: r.p90 ?? all.p90,
+          n: r.n ?? all.n ?? 0, base: r.med!=null ? b : "全部"};
+}
+function median(a){ a=a.filter(x=>x!=null&&!isNaN(x)).sort((x,y)=>x-y);
+  if(!a.length) return null; const i=(a.length-1)/2, lo=Math.floor(i), hi=Math.ceil(i);
+  return (a[lo]+a[hi])/2; }
+const r5 = v => Math.round(v/5)*5;               // 取整到 5cm
+const r10 = v => Math.round(v/10)*10;
+
+/* ---------- 相似桥例 ---------- */
+function nearest(L, k=8){
+  return ROWS.filter(r=>r.L && (!F.rf || r.sys==="连续刚构")).map(r=>({r, d:Math.abs(r.L-L)/L}))
+    .sort((a,b)=>a.d-b.d).slice(0,k).map(x=>x.r);
+}
+
+/* ---------- 推荐构造尺寸 ---------- */
+function recommend(L, B){
+  const kr = ST["全部"].r_root || {}, km = ST["全部"].r_mid || {};
+  // 根部梁高
+  const hRootMed = kr.med ? L*100/kr.med : null;
+  const hRootLo  = kr.p90 ? L*100/kr.p90 : null;   // 比值大→梁高小
+  const hRootHi  = kr.p10 ? L*100/kr.p10 : null;
+  const hMidMed  = km.med ? L*100/km.med : null;
+  const hMidLo   = km.p90 ? L*100/km.p90 : null;
+  const hMidHi   = km.p10 ? L*100/km.p10 : null;
+  // 梁高比、悬臂、底宽
+  const ratio = ROWS.filter(r=>r.h_root&&r.h_mid).map(r=>r.h_root/r.h_mid);
+  const ratioMed = median(ratio);
+  const near = nearest(L, 12);
+  const cantMed = median(near.map(r=>r.cant).concat(ROWS.map(r=>r.cant)));
+  const ctMed   = median(near.map(r=>r.t_cant).concat(ROWS.map(r=>r.t_cant)));
+  const edge    = ST["全部"].edge || {};
+  const sect    = (()=>{ const c={}; near.forEach(r=>{ if(r.sect) c[r.sect]=(c[r.sect]||0)+1; });
+    const e=Object.entries(c).sort((a,b)=>b[1]-a[1]); return e.length?e[0][0]:"单箱单室"; })();
+  const Buse = B || median(near.map(r=>r.B)) || 12;
+  const bot  = Math.max(300, (Buse*100) - 2*(cantMed||250));
+  return {L, B:Buse, hRootMed, hRootLo, hRootHi, hMidMed, hMidLo, hMidHi,
+          ratioMed, cant:cantMed, cantt:ctMed, edge:edge.med, edgeLo:edge.p10, edgeHi:edge.p90,
+          sect, bot};
+}
+
+/* ---------- 渲染：卡片 ---------- */
+function renderCards(rec){
+  const kr = ST["全部"].r_root||{};
+  const rows = [
+    {k:"推荐根部梁高", v:nf(r5(rec.hRootMed)/100,2), u:"m", d:"≈ L/"+nf(rec.L*100/r5(rec.hRootMed),1)+"　全库中位 L/"+nf(kr.med,1), hi:1},
+    {k:"推荐跨中梁高", v:nf(r5(rec.hMidMed)/100,2), u:"m", d:"≈ L/"+nf(rec.L*100/r5(rec.hMidMed),1), hi:1},
+    {k:"梁高比 根/中", v:nf(rec.ratioMed/1,2), u:"倍", d:"常用 2.0~2.7"},
+    {k:"跨径/根部梁高", v:nf(rec.L*100/r5(rec.hRootMed),1), u:"", d:"经验 16~18"},
+    {k:"推荐边跨比", v:nf(rec.edge,2), u:"", d:"常用 "+nf(rec.edgeLo,2)+"~"+nf(rec.edgeHi,2)},
+    {k:"适配套用断面", v:"", txt:rec.sect, d:"按同跨径桥例统计"},
+  ];
+  $("#cards").innerHTML = rows.map(r=>`<div class="card${r.hi?" hi":""}">
+    <div class="k"><span>${r.k}</span></div>
+    <div class="v">${r.txt?`<span style="font-size:19px">${r.txt}</span>`:`${r.v}<small>${r.u||""}</small>`}</div>
+    <div class="d">${r.d}</div></div>`).join("");
+}
+
+/* ---------- 渲染：推荐表 ---------- */
+function renderRec(rec, L){
+  const kr = ST["全部"].r_root||{}, km = ST["全部"].r_mid||{};
+  const hp = v => v==null?"—":nf(v/100,2)+" m";
+  const rng = (lo,hi)=> (lo==null||hi==null)?"—":nf(lo/100,2)+" ~ "+nf(hi/100,2)+" m";
+  const T = [
+    ["根部梁高 h<sub>根</sub>", hp(r5(rec.hRootMed)), rng(rec.hRootLo,rec.hRootHi),
+     `L/${nf(kr.med,1)}；建议取 5cm 的整数倍`, "决定支点负弯矩与 0 号块高度"],
+    ["跨中梁高 h<sub>中</sub>", hp(r5(rec.hMidMed)), rng(rec.hMidLo,rec.hMidHi),
+     `L/${nf(km.med,1)}；建议取 5cm 的整数倍`, "控制跨中正弯矩与跨中挠度"],
+    ["根部/跨中 梁高比", nf(rec.ratioMed,2)+" 倍", "2.0 ~ 2.7 倍",
+     "中位值", "比值小则梁底曲线更陡，需查底板压应力"],
+    ["箱梁底宽 b", rec.bot? nf(r5(rec.bot)/100,2)+" m":"—",
+     rec.bot? nf((r5(rec.bot)-60)/100,2)+" ~ "+nf((r5(rec.bot)+60)/100,2)+" m":"—",
+     `按桥宽 ${nf(rec.B,1)} m − 2×悬臂 ${nf(rec.cant,0)} cm`, "需满足抗扭与横向受力，常用 0.55~0.75B"],
+    ["悬臂长度", nf(rec.cant,0)+" cm", "250 ~ 425 cm", "同跨径桥例统计中位值", "悬臂越长，横向预应力需求越大"],
+    ["悬臂根部厚度", nf(rec.cantt,0)+" cm", "50 ~ 90 cm", "同跨径桥例统计中位值", "端部一般 20~25cm，按 1:3 左右变厚"],
+    ["边跨比", nf(rec.edge,2), nf(rec.edgeLo,2)+" ~ "+nf(rec.edgeHi,2),
+     "中位值；边跨 = 边跨比 × 主跨", "刚构边跨宜 0.55~0.60，减小边墩负反力"],
+    ["抛物线次数 n", "1.8", "1.5 ~ 2.0",
+     "1.8 占多数（9/19），1.5 次次之", "n 越大梁底线越平缓"],
+    ["跨径/根部梁高", nf(rec.L*100/r5(rec.hRootMed),1), "16.0 ~ 18.0", "由上表梁高换算", "小于 16 偏刚、大于 18 偏柔"],
+  ];
+  $("#rec").innerHTML = `<thead><tr><th class="l">构造尺寸</th><th>推荐值</th><th>常用区间</th>
+    <th class="l">取值依据</th><th class="l">备注</th></tr></thead><tbody>` +
+    T.map(r=>`<tr><td class="l">${r[0]}</td><td class="mono"><b>${r[1]}</b></td>
+      <td class="mono">${r[2]}</td><td class="l small">${r[3]}</td><td class="l small">${r[4]}</td></tr>`).join("")
+    + `</tbody>`;
+}
+
+/* ---------- 渲染：技术指标 ---------- */
+function renderInd(L, rec){
+  const b = bandOf(L);
+  $("#bandName").textContent = `按「${b} m」档统计，样本 ${(ST[b]||{}).n||0} 座；括号内为全库值`;
+  const rows = [
+    ["conc_r","砼含量",  "m³/m²", 2, "主梁砼 ÷ 桥梁面积"],
+    ["strand_m2","钢束含量（面积）","kg/m²", 1, "预应力钢绞线 ÷ 桥梁面积"],
+    ["strand_m3","钢束含量（砼方量）","kg/m³", 1, "钢绞线 ÷ 砼方量，即配束强度"],
+    ["rebar_m2","普通钢筋（面积）","kg/m²", 0, "钢筋 ÷ 桥梁面积"],
+    ["rebar_m3","普通钢筋（砼方量）","kg/m³", 0, "钢筋 ÷ 砼方量"],
+    ["conc_m","主梁平均断面积","m²", 2, "砼 ÷ 联长（≈ 跨中截面的加权平均），随桥宽变化"],
+  ];
+  let html = `<thead><tr><th class="l">指标</th><th>本档中位</th><th>常用区间 P10~P90</th>
+    <th>样本</th><th>全库中位</th><th class="l">含义</th></tr></thead><tbody>`;
+  let cnt=0;
+  rows.forEach(([k,label,unit,d,dsc])=>{
+    const s = ST[b] && ST[b][k] ? ST[b][k] : (ST["全部"][k]||{});
+    const g = ST["全部"][k]||{};
+    if (s.med==null) return; cnt++;
+    const tag = (ST[b] && ST[b][k]) ? "" : `<span class="tag d">全库</span> `;
+    html += `<tr><td class="l">${label} <span class="small">${unit}</span></td>
+      <td class="mono"><b>${nf(s.med,d)}</b></td>
+      <td class="mono">${(s.n||0)>1? nf(s.p10,d)+" ~ "+nf(s.p90,d) : '<span class="small">样本不足</span>'}</td>
+      <td class="mono small">${tag}${s.n||0}</td>
+      <td class="mono small">${g.med!=null? nf(g.med,d) : "—"}</td>
+      <td class="l small">${dsc}</td></tr>`;
+  });
+  html += `</tbody>`;
+  $("#ind").innerHTML = html;
+
+  // 工程量粗估
+  const cr  = (ST[b]&&ST[b].conc_r||ST["全部"].conc_r||{}).med;
+  const sg  = (ST[b]&&ST[b].strand_m2||ST["全部"].strand_m2||{}).med;
+  const rb  = (ST[b]&&ST[b].rebar_m2||ST["全部"].rebar_m2||{}).med;
+  const e   = rec.edge || 0.56;
+  const Ltot = L*(1+2*e), A = Ltot*rec.B;
+  const q = [];
+  q.push(`按三跨对称、边跨比 ${nf(e,2)} 粗估：联长 <b>${nf(Ltot,1)} m</b>，桥梁面积 <b>${nf(A,0)} m²</b>（桥宽 ${nf(rec.B,1)} m）。`);
+  if (cr) q.push(`主梁砼 ≈ <b>${nf(A*cr,0)} m³</b>（${nf(cr,2)} m³/m²），延米约 <b>${nf(A*cr/Ltot,1)} m³/m</b>。`);
+  if (sg) q.push(`预应力钢束 ≈ <b>${nf(A*sg/1000,1)} t</b>（${nf(sg,0)} kg/m²）。`);
+  if (rb) q.push(`普通钢筋 ≈ <b>${nf(A*rb/1000,1)} t</b>（${nf(rb,0)} kg/m²）。`);
+  q.push(`<span style="color:#8b949e">仅用于方案比选估算，不含墩身、承台、桥面系。</span>`);
+  $("#quant").innerHTML = q.join(" ");
+}
+
+/* ---------- 渲染：相似桥例 ---------- */
+const COLS = [
+  ["name","桥名","l"],["L","主跨 m"],["spans_raw","跨径布置","l"],["B","桥宽 m"],
+  ["sect","断面形式","l"],["h_root","根高 cm"],["h_mid","跨中 cm"],["r_root","L/h根"],
+  ["web","腹板","l"],["b_bot","底宽 cm"],["top","顶板","l"],["bot","底板","l"],
+  ["cant","悬臂 cm"],["t_cant","悬臂根厚"],["n_par","n"],["edge","边跨比"],
+  ["conc_r","砼 m³/m²"],["strand_m2","钢束 kg/m²"],["strand_m3","钢束 kg/m³"],
+];
+// 近桥对照用精简列（保证一屏放下）
+const NEAR_COLS = ["name","L","spans_raw","B","sect","h_root","h_mid","r_root",
+  "b_bot","cant","n_par","edge","conc_r","strand_m2"]
+  .map(k=>COLS.find(c=>c[0]===k));
+const NAMED = {"name":"桥名","L":"主跨 m","spans_raw":"跨径布置","B":"桥宽 m","sect":"断面",
+  "h_root":"根部梁高","h_mid":"跨中梁高","r_root":"L/h根","b_bot":"底宽 cm",
+  "cant":"悬臂 cm","n_par":"腹板数","edge":"边跨比","conc_r":"砼 m³/m²","strand_m2":"钢束 kg/m²"};
+function cell(v,key){
+  if (v==null||v==="") return "—";
+  if (typeof v === "string") return v;
+  if (key==="L") return `<b>${nf(v,0)}</b>`;
+  if (key==="B"||key==="edge") return nf(v,2);
+  if (["conc_r"].includes(key)) return nf(v,2);
+  if (["strand_m2","strand_m3","r_root"].includes(key)) return nf(v,0);
+  if (key==="n_par") return nf(v,1);
+  return nf(v,0);
+}
+function renderNear(L){
+  const list = nearest(L,8);
+  let h = `<thead><tr>${NEAR_COLS.map(c=>`<th class="${c[2]||""}">${NAMED[c[0]]||c[1]}</th>`).join("")}</tr></thead><tbody>`;
+  list.forEach(r=>{
+    const dl = Math.abs(r.L-L)/L;
+    const cls = (r.bad?" warn":"") + (dl<=0.02?" hit":"");
+    h += `<tr class="${cls.trim()}">` + NEAR_COLS.map(c=>{
+      let v = r[c[0]];
+      let extra = "";
+      if (c[0]==="name"){
+        extra = r.bad ? ` <span class="tag w">数据待核</span>` : "";
+        if (r.L_derive) extra += ` <span class="tag d">跨径推算</span>`;
+        if (r.sys && r.sys !== "连续刚构") extra += ` <span class="tag d">${r.sys}</span>`;
+        if (r.q_excl) extra += ` <span class="tag d">含0#块</span>`;
+      }
+      if (c[0]==="L" && dl) extra = ` <span class="small">${dl<0.15?"Δ"+nf(dl*100,0)+"%":""}</span>`;
+      return `<td class="${c[2]||""}">${cell(v,c[0])}${extra}</td>`;
+    }).join("") + `</tr>`;
+    const det = [["腹板", r.web], ["顶板", r.top], ["底板", r.bot],
+                 ["悬臂根厚", r.t_cant ? r.t_cant + " cm" : ""],
+                 ["备注", (r.note1 || "").replace(/\n/g, " ")]]
+      .filter(x => x[1]).map(x => x[0] + " " + x[1]).join("　｜　");
+    if (det) h += `<tr class="sub"><td class="l" colspan="${NEAR_COLS.length}">${det}</td></tr>`;
+  });
+  $("#near").innerHTML = h + `</tbody>`;
+}
+
+/* ---------- 渲染：全量表（主行 + 点击展开明细） ---------- */
+let F = {sect:"", clean:false, rf:true};
+const OPEN = new Set();
+const ALL_COLS = ["name","L","spans_raw","B","sect","h_root","h_mid","r_root",
+  "b_bot","cant","n_par","edge"].map(k => COLS.find(c => c[0] === k));
+
+function detail(r){
+  const box = (t, items) => {
+    const v = items.filter(x => x[1]).map(x => `<b>${x[0]}</b> ${x[1]}`).join("　");
+    return v ? `<div class="dsec"><span class="dt">${t}</span>${v}</div>` : "";
+  };
+  const cleanTxt = s => (s || "").replace(/\n/g, " ").trim();
+  return `<div class="dbox">
+   ${box("板件", [["腹板", r.web], ["顶板", r.top], ["底板", r.bot],
+     ["悬臂根厚", r.t_cant ? r.t_cant + " cm" : ""], ["悬挑比", r.r_cant ? r.r_cant : ""]])}
+   ${box("含量指标", [["砼", r.conc_r ? nf(r.conc_r, 2) + " m³/m²" : ""],
+     ["钢束", r.strand_m2 ? nf(r.strand_m2, 0) + " kg/m²" : ""],
+     ["钢束", r.strand_m3 ? nf(r.strand_m3, 0) + " kg/m³" : ""],
+     ["钢筋", r.rebar_m2 ? nf(r.rebar_m2, 0) + " kg/m²" : ""],
+     ["钢筋", r.rebar_m3 ? nf(r.rebar_m3, 0) + " kg/m³" : ""]])}
+   ${box("工程量", [["桥梁面积", r.area ? nf(r.area, 0) + " m²" : ""],
+     ["箱梁砼", r.conc ? nf(r.conc, 0) + " m³" : ""],
+     ["钢束", r.strand ? nf(r.strand / 1000, 1) + " t" : ""],
+     ["钢筋", r.rebar ? nf(r.rebar / 1000, 1) + " t" : ""]])}
+   ${box("下部构造", [["主墩高", r.pier_h ? r.pier_h + " m" : ""], ["主墩", r.pier],
+     ["0#块", r.blk0 ? r.blk0 + " cm" : ""], ["承台", r.cap_t ? r.cap_t + " cm" : ""],
+     ["桩基", r.pile], ["过渡墩高", r.pier_h2 ? r.pier_h2 + " m" : ""],
+     ["过渡墩", r.pier2], ["承台", r.cap2], ["桩基", r.pile2]])}
+   ${box("备注", [["", cleanTxt(r.note1)], ["", cleanTxt(r.note2)]])}
+   ${r.warn ? `<div class="dsec warnbox">⚠ 待核：${r.warn.join("；")}</div>` : ""}
+   ${r.info ? `<div class="dsec infobox">※ ${r.info.join("；")}</div>` : ""}
+  </div>`;
+}
+
+function renderAll(L){
+  const rows = ROWS.filter(r => {
+    if (F.sect && (r.sect || "未注") !== F.sect) return false;
+    if (F.clean && r.bad) return false;
+    if (F.rf && r.sys !== "连续刚构") return false;
+    return true;
+  }).sort((a, b) => (a.L || 0) - (b.L || 0));
+
+  let h = `<thead><tr><th class="l">桥名</th>`
+    + ALL_COLS.slice(1).map(c => `<th class="${c[2] || ""}">${NAMED[c[0]] || c[1]}</th>`).join("")
+    + `</tr></thead><tbody>`;
+
+  rows.forEach(r => {
+    const dl = r.L ? Math.abs(r.L - L) / L : 1;
+    const on = OPEN.has(r.row);
+    const cls = (r.bad ? " warn" : "") + (dl <= 0.02 ? " hit" : "") + (on ? " open" : "");
+    const first = `<td class="l"><span class="car">${on ? "▾" : "▸"}</span>${r.name}`
+      + (r.bad ? ` <span class="tag w">数据待核</span>` : "")
+      + (r.sys && r.sys !== "连续刚构" ? ` <span class="tag d">${r.sys}</span>` : "")
+      + (r.L_derive ? ` <span class="tag d">跨径推算</span>` : "")
+      + (r.q_excl ? ` <span class="tag d">含0#块</span>` : "") + `</td>`;
+    h += `<tr class="rec ${cls.trim()}" data-r="${r.row}">` + first
+      + ALL_COLS.slice(1).map(c => `<td class="${c[2] || ""}">${cell(r[c[0]], c[0])}</td>`).join("")
+      + `</tr>`;
+    if (on) h += `<tr class="det"><td colspan="${ALL_COLS.length}">${detail(r)}</td></tr>`;
+  });
+
+  $("#all").innerHTML = h + `</tbody>`;
+  $("#allN").textContent = `共 ${rows.length} 座 / 源表 ${ROWS.length} 行`;
+  document.querySelectorAll("tr.rec").forEach(tr => {
+    tr.onclick = () => {
+      const k = +tr.dataset.r;
+      if (OPEN.has(k)) OPEN.delete(k); else OPEN.add(k);
+      renderAll(parseFloat($("#L").value) || 100);
+    };
+  });
+}
+
+/* ---------- 图表 ---------- */
+const NS="http://www.w3.org/2000/svg";
+function chart(el, opt){
+  const W=620,H=300, ml=52,mr=16,mt=26,mb=38;
+  const iw=W-ml-mr, ih=H-mt-mb;
+  const xs = d=> ml + (d-opt.x0)/(opt.x1-opt.x0)*iw;
+  const ys = v=> mt + ih - (v-opt.y0)/(opt.y1-opt.y0)*ih;
+  const dd = (opt.y1-opt.y0) > 50 ? 0 : (opt.y1-opt.y0) > 5 ? 1 : 2;
+  let s = "";
+  // 网格
+  for(let i=0;i<=4;i++){
+    const v = opt.y0 + (opt.y1-opt.y0)*i/4, y = ys(v);
+    s += `<line x1="${ml}" y1="${y}" x2="${W-mr}" y2="${y}" stroke="#eef1f4"/>`;
+    s += `<text x="${ml-7}" y="${y+4}" text-anchor="end" font-size="10.5" fill="#9aa4ae">${nf(v,dd)}</text>`;
+  }
+  for(let i=0;i<=4;i++){
+    const d = opt.x0 + (opt.x1-opt.x0)*i/4, x = xs(d);
+    s += `<text x="${x}" y="${H-mb+16}" text-anchor="middle" font-size="10.5" fill="#9aa4ae">${nf(d,0)}</text>`;
+  }
+  s += `<line x1="${ml}" y1="${mt+ih}" x2="${W-mr}" y2="${mt+ih}" stroke="#d8dee5"/>`;
+  s += `<text x="${W-mr}" y="${H-6}" text-anchor="end" font-size="10.5" fill="#9aa4ae">主跨 (m)</text>`;
+  s += `<text x="${ml-7}" y="${mt-10}" text-anchor="end" font-size="10.5" fill="#b9c1c9">${opt.unit}</text>`;
+  // 经验带
+  if (opt.bands) opt.bands.forEach(b=>{
+    const pts = [];
+    for(let k=0;k<=20;k++){
+      const d = opt.x0+(opt.x1-opt.x0)*k/20;
+      const v = b.f(d); if(v<opt.y0||v>opt.y1) continue;
+      pts.push(`${xs(d).toFixed(1)},${ys(v).toFixed(1)}`);
+    }
+    if(pts.length>1) s += `<polyline points="${pts.join(" ")}" fill="none" stroke="${b.c}" stroke-width="1.2"
+      stroke-dasharray="5 4" opacity=".75"/>`;
+  });
+  // 当前主跨竖线
+  if (opt.mark!=null && opt.mark>=opt.x0 && opt.mark<=opt.x1){
+    s += `<line x1="${xs(opt.mark)}" y1="${mt}" x2="${xs(opt.mark)}" y2="${mt+ih}"
+      stroke="#2c62c9" stroke-width="1.4" opacity=".55"/>`;
+  }
+  // 数据点
+  opt.series.forEach(se=>{
+    (se.data || opt.data || ROWS).forEach(r=>{
+      const v = se.get(r); if(v==null) return;
+      const x = xs(r.L), y = ys(v);
+      if(y<mt-2||y>mt+ih+2) return;
+      s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${se.r||3.6}"
+        fill="${se.c}" fill-opacity="${r.bad?0.25:0.72}" stroke="${se.c}" stroke-width="1"/>`;
+    });
+  });
+  // 标注推荐点
+  if (opt.point){
+    const {x,y,c,label} = opt.point;
+    const px = xs(x), py = ys(y), right = px < W*0.62;
+    s += `<circle cx="${px}" cy="${py}" r="5" fill="#fff" stroke="${c}" stroke-width="2.4"/>`;
+    s += `<text x="${right?px+10:px-10}" y="${py-9}" text-anchor="${right?"start":"end"}"
+      font-size="10.5" fill="${c}" font-weight="600">${label}</text>`;
+  }
+  el.innerHTML = s;
+  el.setAttribute("viewBox",`0 0 ${W} ${H}`);
+}
+
+/* ---------- 主流程 ---------- */
+function run(){
+  let L = parseFloat($("#L").value);
+  if (!L || L<20) L = 100;
+  const B = parseFloat($("#B").value) || null;
+  const rec = recommend(L, B);
+
+  // 顶部信息
+  $("#sub").innerHTML = `数据源 <b>${META.src}</b> · ${META.n_rows} 座实桥 · 主跨 <b>${META.L_min}~${META.L_max} m</b> · `
+    + `连续刚构 <b>${META.n_clean}</b> 座（含工程量 ${META.n_quant} 座）`
+    + (META.n_lianxu ? ` · 连续梁 ${META.n_lianxu} 座另列` : "")
+    + (META.n_qexcl ? ` · ${META.n_qexcl} 座含量含 0# 块` : "");
+  const _fs = $("#fSrc"); if (_fs) _fs.textContent = `实桥 ${META.n_rows} 座 · 主跨 ${META.L_min}~${META.L_max} m`;
+  $("#hint").innerHTML = `当前查询：主跨 <b>${nf(L,0)} m</b>`
+    + (B?`，桥宽 <b>${nf(B,1)} m</b>`:`（桥宽按同跨径中位 ${nf(rec.B,1)} m 取用）`)
+    + `　→　落档 <b>${bandOf(L)} m</b>，同档样本 <b>${(ST[bandOf(L)]||{}).n||0}</b> 座`;
+
+  renderCards(rec);
+  renderRec(rec, L);
+  renderInd(L, rec);
+  renderNear(L);
+  renderAll(L);
+
+  // 图 1：梁高
+  const chartRows = F.rf ? ROWS.filter(r=>r.sys==="连续刚构") : ROWS;
+  chart($("#c1"), {
+    x0:40, x1:230, y0:0, y1:1500, unit:"梁高 cm", mark:L, data:chartRows,
+    bands:[
+      {c:"#3b7ddd", f:d=>d*100/16.7},
+      {c:"#3b7ddd", f:d=>d*100/18.2},
+      {c:"#e8730c", f:d=>d*100/38.5},
+      {c:"#e8730c", f:d=>d*100/30.0},
+    ],
+    series:[
+      {c:"#3b7ddd", get:r=>r.h_root},
+      {c:"#e8730c", get:r=>r.h_mid},
+    ],
+    point:{x:L, y:r5(rec.hRootMed), c:"#20559c", label:`h根 ${nf(r5(rec.hRootMed),0)}cm`},
+  });
+  // 图 2：砼含量
+  chart($("#c2"), {
+    x0:40, x1:230, y0:0.6, y1:2.1, unit:"砼含量 m³/m²", mark:L, data:chartRows,
+    bands:[{c:"#9aa4ae", f:d=>1.05}, {c:"#9aa4ae", f:d=>1.30}],
+    series:[{c:"#9aa4ae", r:4, get:r=>r.conc_r}],
+  });
+}
+
+/* ---------- 交互 ---------- */
+$("#chips").innerHTML = [60,80,100,120,135,150,190,220]
+  .map(v=>`<button class="chip" data-v="${v}">${v}</button>`).join("");
+document.addEventListener("click", e=>{
+  const c = e.target.closest(".chip");
+  if(!c) return;
+  $("#L").value = c.dataset.v; $("#sl").value = c.dataset.v;
+  document.querySelectorAll(".chip").forEach(x=>x.classList.toggle("on", x===c));
+  run();
+});
+$("#L").addEventListener("input", ()=>{ $("#sl").value = $("#L").value; run(); });
+$("#B").addEventListener("input", run);
+$("#sl").addEventListener("input", ()=>{ $("#L").value = $("#sl").value; run(); });
+$("#fSect").addEventListener("change", e=>{ F.sect = e.target.value; renderAll(parseFloat($("#L").value)||100); });
+const _fc = $("#fClean"); if (_fc) _fc.addEventListener("change", e=>{ F.clean = e.target.checked; renderAll(parseFloat($("#L").value)||100); });
+$("#fRF").addEventListener("change", e=>{ F.rf = e.target.checked; buildSectOptions(); run(); });
+
+// 断面下拉（计数跟随「仅连续刚构」筛选）
+function buildSectOptions(){
+  const base = ROWS.filter(r=>!F.rf || r.sys==="连续刚构");
+  const sects = {};
+  base.forEach(r=>{ const k=r.sect||"未注"; sects[k]=(sects[k]||0)+1; });
+  const cur = F.sect;
+  $("#fSect").innerHTML = `<option value="">全部断面（${base.length}）</option>` +
+    Object.entries(sects).sort((a,b)=>b[1]-a[1])
+      .map(([k,v])=>`<option value="${k}">${k}（${v}）</option>`).join("");
+  $("#fSect").value = cur;
+}
+buildSectOptions();
+
+document.querySelector('.chip[data-v="100"]')?.classList.add("on");
+run();
+</script>
+</body></html>

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>连续刚构箱梁构造尺寸速查</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:26px 30px 60px;background:#f6f7f9;color:#1c2530;
+ font:14px/1.65 "Microsoft YaHei",system-ui,-apple-system,sans-serif}
+h1{font-size:22px;margin:0 0 4px;font-weight:600;letter-spacing:.3px}
+.sub{color:#68737d;font-size:13px}
+.sub b{color:#2c62c9;font-weight:600}
+.wrap{max-width:1240px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:16px}
+
+/* 查询区 */
+.query{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:16px 18px;margin-bottom:16px;
+ box-shadow:0 1px 2px rgba(28,37,48,.04)}
+.qrow{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;color:#68737d}
+.inp{display:flex;align-items:center;border:1px solid #cfd6de;border-radius:8px;background:#fff;overflow:hidden}
+.inp:focus-within{border-color:#3b7ddd;box-shadow:0 0 0 3px rgba(59,125,221,.12)}
+.inp input{border:0;outline:0;font:600 20px/1 "Microsoft YaHei",system-ui;width:104px;padding:9px 4px 9px 12px;color:#1c2530}
+.inp input.w{font-size:15px;font-weight:500;width:74px;padding:10px 4px 10px 10px}
+.inp .u{padding:0 11px 0 2px;color:#8b949e;font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid #dfe4ea;background:#fff;color:#41505e;border-radius:14px;padding:3px 10px;
+ font-size:12px;cursor:pointer;transition:.15s}
+.chip:hover{border-color:#3b7ddd;color:#2c62c9;background:#f4f8ff}
+.chip.on{background:#3b7ddd;border-color:#3b7ddd;color:#fff}
+.len{flex:1;min-width:220px}
+.slider{width:100%;margin:6px 0 0;accent-color:#3b7ddd}
+.hint{font-size:12px;color:#8b949e;margin-top:8px}
+.hint b{color:#4a5560}
+
+/* 卡片 */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e3e7ec;border-radius:10px;padding:13px 15px}
+.card .k{font-size:12px;color:#68737d;display:flex;justify-content:space-between;gap:6px}
+.card .v{font-size:25px;font-weight:600;margin-top:3px;color:#16202b;letter-spacing:.2px}
+.card .v small{font-size:13px;font-weight:500;color:#68737d;margin-left:3px}
+.card .d{font-size:11.5px;color:#8b949e;margin-top:3px}
+.card.hi{background:linear-gradient(180deg,#f7fbff,#fff);border-color:#cfe1f8}
+.card.hi .v{color:#20559c}
+
+.panel{background:#fff;border:1px solid #e3e7ec;border-radius:12px;padding:15px 18px 17px;margin-bottom:16px}
+.panel h2{font-size:15px;margin:0 0 12px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.panel h2 .n{font-size:11.5px;color:#8b949e;font-weight:400}
+.panel h2 .r{margin-left:auto;font-size:12px;font-weight:400;color:#68737d}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{border-bottom:1px solid #eef1f4;padding:6px 8px;text-align:right;white-space:nowrap}
+th{background:#fafbfc;color:#4a5560;font-weight:600}
+td.l,th.l{text-align:left}
+tbody tr:hover td{background:#f3f8ff}
+tr.warn td{background:#fff8f2}
+tr.warn:hover td{background:#fff2e6}
+tr.hit td{background:#f2f8ff!important;box-shadow:inset 3px 0 0 #3b7ddd}
+.xscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:6px}
+.scroll{max-height:640px;overflow:auto;-webkit-overflow-scrolling:touch;border-radius:6px}
+.scroll thead th{position:sticky;top:0;z-index:2}
+.tag{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;background:#eef4ff;color:#2c62c9;white-space:nowrap}
+.tag.g{background:#eafaf0;color:#1a7f4b}
+.tag.w{background:#fff1e6;color:#b35309}
+.tag.d{background:#f2f4f7;color:#68737d}
+.mono{font-variant-numeric:tabular-nums}
+.small{font-size:12px;color:#68737d}
+.bar{position:relative;height:6px;background:#eef1f5;border-radius:3px;min-width:64px}
+.bar i{position:absolute;top:0;bottom:0;background:#8fbcf0;border-radius:3px}
+.bar b{position:absolute;top:-2px;bottom:-2px;width:2px;background:#20559c}
+.car{display:inline-block;width:12px;color:#c3cad1;font-size:9px;vertical-align:1px}
+tr.open .car{color:#3b7ddd}
+tr.rec{cursor:pointer}
+tr.sub td{background:#fcfdfe;border-bottom:1px solid #eef1f4;color:#8b949e;font-size:11.5px;
+ padding-top:0;padding-bottom:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0}
+tr.det td{background:#fbfcfe;border-bottom:1px solid #e3e7ec;padding:0;text-align:left;white-space:normal}
+.dbox{padding:9px 14px 11px;text-align:left;white-space:normal}
+tr.det:hover td{background:#fbfcfe}
+.dsec{font-size:12px;color:#4a5560;padding:1px 0;line-height:1.9;white-space:normal}
+.dsec b{color:#9aa4ae;font-weight:400;margin-right:1px}
+.dt{display:inline-block;min-width:66px;color:#c3cad1;font-size:11px}
+.warnbox{color:#b35309}
+.infobox{color:#8b949e;font-size:11.5px}
+.legend{font-size:12px;color:#68737d;margin-top:9px;display:flex;gap:16px;flex-wrap:wrap}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:900px){.charts{grid-template-columns:1fr}}
+.note{font-size:12px;color:#68737d;background:#fafbfc;border:1px solid #eef1f4;border-radius:8px;padding:9px 12px;margin-top:12px}
+.note b{color:#b35309}
+footer{color:#9aa4ae;font-size:11.5px;text-align:center;margin-top:26px;line-height:1.9}
+@media(max-width:820px){
+ body{padding:14px 12px 40px;font-size:14px}
+ .qrow{gap:10px}
+ .len{flex:1 1 100%;min-width:0}
+ .field{flex:0 0 auto}
+ .chips{gap:5px}
+ .chip{padding:3px 9px}
+ .panel{padding:13px 12px 14px}
+ table{font-size:12px}
+ th,td{padding:6px 5px}
+ h1{font-size:19px}
+ .inp input{width:88px;font-size:18px}
+ .card .v{font-size:22px}
+ .scroll{max-height:60vh}
+ td,th{padding:6px}
+}
+</style></head><body><div class="wrap">
+
+<div class="top">
+ <div>
+  <h1>连续刚构箱梁 · 构造尺寸速查</h1>
+  <div class="sub" id="sub"></div>
+ </div>
+ <div class="sub" style="text-align:right">输入主跨 → 出构造尺寸 + 技术指标</div>
+</div>
+
+<div class="query">
+ <div class="qrow">
+  <div class="field">
+   <label>主跨跨径 L</label>
+   <div class="inp"><input id="L" type="number" min="30" max="300" step="1" value="100"><span class="u">m</span></div>
+  </div>
+  <div class="field">
+   <label>桥宽 B<span class="small">（可选）</span></label>
+   <div class="inp"><input id="B" class="w" type="number" min="6" max="40" step="0.5" placeholder="—"><span class="u">m</span></div>
+  </div>
+  <div class="field len">
+   <label>拖动快速选跨径</label>
+   <input id="sl" class="slider" type="range" min="30" max="240" step="1" value="100">
+   <div class="chips" id="chips"></div>
+  </div>
+ </div>
+ <div class="hint" id="hint"></div>
+</div>
+
+<div class="cards" id="cards"></div>
+
+<div class="panel">
+ <h2>推荐构造尺寸<span class="n">按全库比值统计（校核通过项），已按输入主跨换算</span>
+  <span class="r" id="recR"></span></h2>
+ <div class="xscroll"><table id="rec"></table></div>
+</div>
+
+<div class="panel">
+ <h2>技术指标参考<span class="n" id="bandName"></span></h2>
+ <div class="xscroll"><table id="ind"></table></div>
+ <div class="note" id="quant"></div>
+</div>
+
+<div class="panel">
+ <h2>同跨径实桥对照<span class="n">按 |Δ主跨| 排序，取最接近的 8 座</span></h2>
+ <div class="scroll"><table id="near"></table></div>
+ <div class="legend"><span><span class="dot" style="background:#f0a04b"></span>黄色底 = 源表数据待核（尺寸仍可参考，工程量慎用）</span></div>
+</div>
+
+<div class="panel">
+ <h2>趋势：梁高 — 主跨<span class="n">左图纵轴 梁高 cm ｜ 右图纵轴 砼含量 m³/m² ｜ 虚线为经验带，竖线为当前主跨</span></h2>
+ <div class="charts">
+  <svg id="c1" viewBox="0 0 620 300" width="100%" height="300"></svg>
+  <svg id="c2" viewBox="0 0 620 300" width="100%" height="300"></svg>
+ </div>
+ <div class="legend">
+  <span><span class="dot" style="background:#3b7ddd"></span>根部梁高</span>
+  <span><span class="dot" style="background:#e8730c"></span>跨中梁高</span>
+  <span><span class="dot" style="background:#9aa4ae"></span>砼含量（空心=数据待核）</span>
+ </div>
+</div>
+
+<div class="panel">
+ <h2>全部实桥数据<span class="n" id="allN"></span><span class="n" style="color:#b9c1c9">← 可左右滑动 →</span>
+  <span class="r">
+   <select id="fSect" style="font:12px/1 'Microsoft YaHei';padding:4px 6px;border:1px solid #dfe4ea;border-radius:6px;background:#fff;color:#41505e">
+    <option value="">全部断面</option>
+   </select>
+   <label class="small" style="margin-left:8px;cursor:pointer"><input type="checkbox" id="fClean"> 仅校核通过</label>
+   <label class="small" style="margin-left:8px;cursor:pointer"><input type="checkbox" id="fRF" checked> 仅连续刚构</label>
+  </span></h2>
+ <div class="scroll"><table id="all"></table></div>
+</div>
+
+<div class="note" style="margin-top:0">
+ <b>口径与用法</b>：主跨、桥宽单位 m；梁高、板厚、悬臂、底宽单位 cm；含量指标按「砼 m³ ÷ 桥梁面积 m²」「钢束 kg ÷ 桥梁面积 m² / ÷ 砼 m³」计。<br>
+ 「推荐值」= 全库比值中位值 × 输入主跨，取整到 5cm；「常用区间」为 P10~P90。<b>本工具用于方案阶段定尺寸，施工图须按结构验算与规范（JTG 3362-2018、JTG/T 3365-01-2020）复核。</b>
+</div>
+
+<footer>
+ 数据源：连续刚构箱梁尺寸2025.06-整理.xls · <span id="fSrc"></span><br>
+ 生成于 2026-10-26 · 辉歌说
+</footer>
+</div>
+
+<script>
+const DB = /*__DATA__*/;
+const ROWS = DB.rows, META = DB.meta, ST = DB.stats, STA = DB.stats_all;
+const $ = s => document.querySelector(s);
+const nf = (v,d=0) => v==null||v===""||isNaN(v) ? "—" : (+v).toFixed(d);
+const m2 = v => nf(v,2);
+
+/* ---------- 基础：取同档统计 ---------- */
+function bandOf(L){
+  if (L < 80)  return "≤80";
+  if (L < 120) return "80~120";
+  if (L < 160) return "120~160";
+  return "≥160";
+}
+function stat(key, L){
+  const b = bandOf(L); const s = ST[b] || {};
+  const r = s[key] || {};
+  const all = (ST["全部"]||{})[key] || {};
+  return {med: r.med ?? all.med, p10: r.p10 ?? all.p10, p90: r.p90 ?? all.p90,
+          n: r.n ?? all.n ?? 0, base: r.med!=null ? b : "全部"};
+}
+function median(a){ a=a.filter(x=>x!=null&&!isNaN(x)).sort((x,y)=>x-y);
+  if(!a.length) return null; const i=(a.length-1)/2, lo=Math.floor(i), hi=Math.ceil(i);
+  return (a[lo]+a[hi])/2; }
+const r5 = v => Math.round(v/5)*5;               // 取整到 5cm
+const r10 = v => Math.round(v/10)*10;
+
+/* ---------- 相似桥例 ---------- */
+function nearest(L, k=8){
+  return ROWS.filter(r=>r.L && (!F.rf || r.sys==="连续刚构")).map(r=>({r, d:Math.abs(r.L-L)/L}))
+    .sort((a,b)=>a.d-b.d).slice(0,k).map(x=>x.r);
+}
+
+/* ---------- 推荐构造尺寸 ---------- */
+function recommend(L, B){
+  const kr = ST["全部"].r_root || {}, km = ST["全部"].r_mid || {};
+  // 根部梁高
+  const hRootMed = kr.med ? L*100/kr.med : null;
+  const hRootLo  = kr.p90 ? L*100/kr.p90 : null;   // 比值大→梁高小
+  const hRootHi  = kr.p10 ? L*100/kr.p10 : null;
+  const hMidMed  = km.med ? L*100/km.med : null;
+  const hMidLo   = km.p90 ? L*100/km.p90 : null;
+  const hMidHi   = km.p10 ? L*100/km.p10 : null;
+  // 梁高比、悬臂、底宽
+  const ratio = ROWS.filter(r=>r.h_root&&r.h_mid).map(r=>r.h_root/r.h_mid);
+  const ratioMed = median(ratio);
+  const near = nearest(L, 12);
+  const cantMed = median(near.map(r=>r.cant).concat(ROWS.map(r=>r.cant)));
+  const ctMed   = median(near.map(r=>r.t_cant).concat(ROWS.map(r=>r.t_cant)));
+  const edge    = ST["全部"].edge || {};
+  const sect    = (()=>{ const c={}; near.forEach(r=>{ if(r.sect) c[r.sect]=(c[r.sect]||0)+1; });
+    const e=Object.entries(c).sort((a,b)=>b[1]-a[1]); return e.length?e[0][0]:"单箱单室"; })();
+  const Buse = B || median(near.map(r=>r.B)) || 12;
+  const bot  = Math.max(300, (Buse*100) - 2*(cantMed||250));
+  return {L, B:Buse, hRootMed, hRootLo, hRootHi, hMidMed, hMidLo, hMidHi,
+          ratioMed, cant:cantMed, cantt:ctMed, edge:edge.med, edgeLo:edge.p10, edgeHi:edge.p90,
+          sect, bot};
+}
+
+/* ---------- 渲染：卡片 ---------- */
+function renderCards(rec){
+  const kr = ST["全部"].r_root||{};
+  const rows = [
+    {k:"推荐根部梁高", v:nf(r5(rec.hRootMed)/100,2), u:"m", d:"≈ L/"+nf(rec.L*100/r5(rec.hRootMed),1)+"　全库中位 L/"+nf(kr.med,1), hi:1},
+    {k:"推荐跨中梁高", v:nf(r5(rec.hMidMed)/100,2), u:"m", d:"≈ L/"+nf(rec.L*100/r5(rec.hMidMed),1), hi:1},
+    {k:"梁高比 根/中", v:nf(rec.ratioMed/1,2), u:"倍", d:"常用 2.0~2.7"},
+    {k:"跨径/根部梁高", v:nf(rec.L*100/r5(rec.hRootMed),1), u:"", d:"经验 16~18"},
+    {k:"推荐边跨比", v:nf(rec.edge,2), u:"", d:"常用 "+nf(rec.edgeLo,2)+"~"+nf(rec.edgeHi,2)},
+    {k:"适配套用断面", v:"", txt:rec.sect, d:"按同跨径桥例统计"},
+  ];
+  $("#cards").innerHTML = rows.map(r=>`<div class="card${r.hi?" hi":""}">
+    <div class="k"><span>${r.k}</span></div>
+    <div class="v">${r.txt?`<span style="font-size:19px">${r.txt}</span>`:`${r.v}<small>${r.u||""}</small>`}</div>
+    <div class="d">${r.d}</div></div>`).join("");
+}
+
+/* ---------- 渲染：推荐表 ---------- */
+function renderRec(rec, L){
+  const kr = ST["全部"].r_root||{}, km = ST["全部"].r_mid||{};
+  const hp = v => v==null?"—":nf(v/100,2)+" m";
+  const rng = (lo,hi)=> (lo==null||hi==null)?"—":nf(lo/100,2)+" ~ "+nf(hi/100,2)+" m";
+  const T = [
+    ["根部梁高 h<sub>根</sub>", hp(r5(rec.hRootMed)), rng(rec.hRootLo,rec.hRootHi),
+     `L/${nf(kr.med,1)}；建议取 5cm 的整数倍`, "决定支点负弯矩与 0 号块高度"],
+    ["跨中梁高 h<sub>中</sub>", hp(r5(rec.hMidMed)), rng(rec.hMidLo,rec.hMidHi),
+     `L/${nf(km.med,1)}；建议取 5cm 的整数倍`, "控制跨中正弯矩与跨中挠度"],
+    ["根部/跨中 梁高比", nf(rec.ratioMed,2)+" 倍", "2.0 ~ 2.7 倍",
+     "中位值", "比值小则梁底曲线更陡，需查底板压应力"],
+    ["箱梁底宽 b", rec.bot? nf(r5(rec.bot)/100,2)+" m":"—",
+     rec.bot? nf((r5(rec.bot)-60)/100,2)+" ~ "+nf((r5(rec.bot)+60)/100,2)+" m":"—",
+     `按桥宽 ${nf(rec.B,1)} m − 2×悬臂 ${nf(rec.cant,0)} cm`, "需满足抗扭与横向受力，常用 0.55~0.75B"],
+    ["悬臂长度", nf(rec.cant,0)+" cm", "250 ~ 425 cm", "同跨径桥例统计中位值", "悬臂越长，横向预应力需求越大"],
+    ["悬臂根部厚度", nf(rec.cantt,0)+" cm", "50 ~ 90 cm", "同跨径桥例统计中位值", "端部一般 20~25cm，按 1:3 左右变厚"],
+    ["边跨比", nf(rec.edge,2), nf(rec.edgeLo,2)+" ~ "+nf(rec.edgeHi,2),
+     "中位值；边跨 = 边跨比 × 主跨", "刚构边跨宜 0.55~0.60，减小边墩负反力"],
+    ["抛物线次数 n", "1.8", "1.5 ~ 2.0",
+     "1.8 占多数（9/19），1.5 次次之", "n 越大梁底线越平缓"],
+    ["跨径/根部梁高", nf(rec.L*100/r5(rec.hRootMed),1), "16.0 ~ 18.0", "由上表梁高换算", "小于 16 偏刚、大于 18 偏柔"],
+  ];
+  $("#rec").innerHTML = `<thead><tr><th class="l">构造尺寸</th><th>推荐值</th><th>常用区间</th>
+    <th class="l">取值依据</th><th class="l">备注</th></tr></thead><tbody>` +
+    T.map(r=>`<tr><td class="l">${r[0]}</td><td class="mono"><b>${r[1]}</b></td>
+      <td class="mono">${r[2]}</td><td class="l small">${r[3]}</td><td class="l small">${r[4]}</td></tr>`).join("")
+    + `</tbody>`;
+}
+
+/* ---------- 渲染：技术指标 ---------- */
+function renderInd(L, rec){
+  const b = bandOf(L);
+  $("#bandName").textContent = `按「${b} m」档统计，样本 ${(ST[b]||{}).n||0} 座；括号内为全库值`;
+  const rows = [
+    ["conc_r","砼含量",  "m³/m²", 2, "主梁砼 ÷ 桥梁面积"],
+    ["strand_m2","钢束含量（面积）","kg/m²", 1, "预应力钢绞线 ÷ 桥梁面积"],
+    ["strand_m3","钢束含量（砼方量）","kg/m³", 1, "钢绞线 ÷ 砼方量，即配束强度"],
+    ["rebar_m2","普通钢筋（面积）","kg/m²", 0, "钢筋 ÷ 桥梁面积"],
+    ["rebar_m3","普通钢筋（砼方量）","kg/m³", 0, "钢筋 ÷ 砼方量"],
+    ["conc_m","主梁平均断面积","m²", 2, "砼 ÷ 联长（≈ 跨中截面的加权平均），随桥宽变化"],
+  ];
+  let html = `<thead><tr><th class="l">指标</th><th>本档中位</th><th>常用区间 P10~P90</th>
+    <th>样本</th><th>全库中位</th><th class="l">含义</th></tr></thead><tbody>`;
+  let cnt=0;
+  rows.forEach(([k,label,unit,d,dsc])=>{
+    const s = ST[b] && ST[b][k] ? ST[b][k] : (ST["全部"][k]||{});
+    const g = ST["全部"][k]||{};
+    if (s.med==null) return; cnt++;
+    const tag = (ST[b] && ST[b][k]) ? "" : `<span class="tag d">全库</span> `;
+    html += `<tr><td class="l">${label} <span class="small">${unit}</span></td>
+      <td class="mono"><b>${nf(s.med,d)}</b></td>
+      <td class="mono">${(s.n||0)>1? nf(s.p10,d)+" ~ "+nf(s.p90,d) : '<span class="small">样本不足</span>'}</td>
+      <td class="mono small">${tag}${s.n||0}</td>
+      <td class="mono small">${g.med!=null? nf(g.med,d) : "—"}</td>
+      <td class="l small">${dsc}</td></tr>`;
+  });
+  html += `</tbody>`;
+  $("#ind").innerHTML = html;
+
+  // 工程量粗估
+  const cr  = (ST[b]&&ST[b].conc_r||ST["全部"].conc_r||{}).med;
+  const sg  = (ST[b]&&ST[b].strand_m2||ST["全部"].strand_m2||{}).med;
+  const rb  = (ST[b]&&ST[b].rebar_m2||ST["全部"].rebar_m2||{}).med;
+  const e   = rec.edge || 0.56;
+  const Ltot = L*(1+2*e), A = Ltot*rec.B;
+  const q = [];
+  q.push(`按三跨对称、边跨比 ${nf(e,2)} 粗估：联长 <b>${nf(Ltot,1)} m</b>，桥梁面积 <b>${nf(A,0)} m²</b>（桥宽 ${nf(rec.B,1)} m）。`);
+  if (cr) q.push(`主梁砼 ≈ <b>${nf(A*cr,0)} m³</b>（${nf(cr,2)} m³/m²），延米约 <b>${nf(A*cr/Ltot,1)} m³/m</b>。`);
+  if (sg) q.push(`预应力钢束 ≈ <b>${nf(A*sg/1000,1)} t</b>（${nf(sg,0)} kg/m²）。`);
+  if (rb) q.push(`普通钢筋 ≈ <b>${nf(A*rb/1000,1)} t</b>（${nf(rb,0)} kg/m²）。`);
+  q.push(`<span style="color:#8b949e">仅用于方案比选估算，不含墩身、承台、桥面系。</span>`);
+  $("#quant").innerHTML = q.join(" ");
+}
+
+/* ---------- 渲染：相似桥例 ---------- */
+const COLS = [
+  ["name","桥名","l"],["L","主跨 m"],["spans_raw","跨径布置","l"],["B","桥宽 m"],
+  ["sect","断面形式","l"],["h_root","根高 cm"],["h_mid","跨中 cm"],["r_root","L/h根"],
+  ["web","腹板","l"],["b_bot","底宽 cm"],["top","顶板","l"],["bot","底板","l"],
+  ["cant","悬臂 cm"],["t_cant","悬臂根厚"],["n_par","n"],["edge","边跨比"],
+  ["conc_r","砼 m³/m²"],["strand_m2","钢束 kg/m²"],["strand_m3","钢束 kg/m³"],
+];
+// 近桥对照用精简列（保证一屏放下）
+const NEAR_COLS = ["name","L","spans_raw","B","sect","h_root","h_mid","r_root",
+  "b_bot","cant","n_par","edge","conc_r","strand_m2"]
+  .map(k=>COLS.find(c=>c[0]===k));
+const NAMED = {"name":"桥名","L":"主跨 m","spans_raw":"跨径布置","B":"桥宽 m","sect":"断面",
+  "h_root":"根部梁高","h_mid":"跨中梁高","r_root":"L/h根","b_bot":"底宽 cm",
+  "cant":"悬臂 cm","n_par":"n","edge":"边跨比","conc_r":"砼 m³/m²","strand_m2":"钢束 kg/m²"};
+function cell(v,key){
+  if (v==null||v==="") return "—";
+  if (typeof v === "string") return v;
+  if (key==="L") return `<b>${nf(v,0)}</b>`;
+  if (key==="B"||key==="edge") return nf(v,2);
+  if (["conc_r"].includes(key)) return nf(v,2);
+  if (["strand_m2","strand_m3","r_root"].includes(key)) return nf(v,0);
+  if (key==="n_par") return nf(v,1);
+  return nf(v,0);
+}
+function renderNear(L){
+  const list = nearest(L,8);
+  let h = `<thead><tr>${NEAR_COLS.map(c=>`<th class="${c[2]||""}">${NAMED[c[0]]||c[1]}</th>`).join("")}</tr></thead><tbody>`;
+  list.forEach(r=>{
+    const dl = Math.abs(r.L-L)/L;
+    const cls = (r.bad?" warn":"") + (dl<=0.02?" hit":"");
+    h += `<tr class="${cls.trim()}">` + NEAR_COLS.map(c=>{
+      let v = r[c[0]];
+      let extra = "";
+      if (c[0]==="name"){
+        extra = ` <span class="tag ${r.bad?"w":"g"}">${r.bad?"待核":"校核通过"}</span>`;
+        if (r.L_derive) extra += ` <span class="tag d">跨径推算</span>`;
+        if (r.sys && r.sys !== "连续刚构") extra += ` <span class="tag d">${r.sys}</span>`;
+        if (r.q_excl) extra += ` <span class="tag d">含0#块</span>`;
+      }
+      if (c[0]==="L" && dl) extra = ` <span class="small">${dl<0.15?"Δ"+nf(dl*100,0)+"%":""}</span>`;
+      return `<td class="${c[2]||""}">${cell(v,c[0])}${extra}</td>`;
+    }).join("") + `</tr>`;
+    const det = [["腹板", r.web], ["顶板", r.top], ["底板", r.bot],
+                 ["悬臂根厚", r.t_cant ? r.t_cant + " cm" : ""],
+                 ["备注", (r.note1 || "").replace(/\n/g, " ")]]
+      .filter(x => x[1]).map(x => x[0] + " " + x[1]).join("　｜　");
+    if (det) h += `<tr class="sub"><td class="l" colspan="${NEAR_COLS.length}">${det}</td></tr>`;
+  });
+  $("#near").innerHTML = h + `</tbody>`;
+}
+
+/* ---------- 渲染：全量表（主行 + 点击展开明细） ---------- */
+let F = {sect:"", clean:false, rf:true};
+const OPEN = new Set();
+const ALL_COLS = ["name","L","spans_raw","B","sect","h_root","h_mid","r_root",
+  "b_bot","cant","n_par","edge"].map(k => COLS.find(c => c[0] === k));
+
+function detail(r){
+  const box = (t, items) => {
+    const v = items.filter(x => x[1]).map(x => `<b>${x[0]}</b> ${x[1]}`).join("　");
+    return v ? `<div class="dsec"><span class="dt">${t}</span>${v}</div>` : "";
+  };
+  const cleanTxt = s => (s || "").replace(/\n/g, " ").trim();
+  return `<div class="dbox">
+   ${box("板件", [["腹板", r.web], ["顶板", r.top], ["底板", r.bot],
+     ["悬臂根厚", r.t_cant ? r.t_cant + " cm" : ""], ["悬挑比", r.r_cant ? r.r_cant : ""]])}
+   ${box("含量指标", [["砼", r.conc_r ? nf(r.conc_r, 2) + " m³/m²" : ""],
+     ["钢束", r.strand_m2 ? nf(r.strand_m2, 0) + " kg/m²" : ""],
+     ["钢束", r.strand_m3 ? nf(r.strand_m3, 0) + " kg/m³" : ""],
+     ["钢筋", r.rebar_m2 ? nf(r.rebar_m2, 0) + " kg/m²" : ""],
+     ["钢筋", r.rebar_m3 ? nf(r.rebar_m3, 0) + " kg/m³" : ""]])}
+   ${box("工程量", [["桥梁面积", r.area ? nf(r.area, 0) + " m²" : ""],
+     ["箱梁砼", r.conc ? nf(r.conc, 0) + " m³" : ""],
+     ["钢束", r.strand ? nf(r.strand / 1000, 1) + " t" : ""],
+     ["钢筋", r.rebar ? nf(r.rebar / 1000, 1) + " t" : ""]])}
+   ${box("下部构造", [["主墩高", r.pier_h ? r.pier_h + " m" : ""], ["主墩", r.pier],
+     ["0#块", r.blk0 ? r.blk0 + " cm" : ""], ["承台", r.cap_t ? r.cap_t + " cm" : ""],
+     ["桩基", r.pile], ["过渡墩高", r.pier_h2 ? r.pier_h2 + " m" : ""],
+     ["过渡墩", r.pier2], ["承台", r.cap2], ["桩基", r.pile2]])}
+   ${box("备注", [["", cleanTxt(r.note1)], ["", cleanTxt(r.note2)]])}
+   ${r.warn ? `<div class="dsec warnbox">⚠ 待核：${r.warn.join("；")}</div>` : ""}
+   ${r.info ? `<div class="dsec infobox">※ ${r.info.join("；")}</div>` : ""}
+  </div>`;
+}
+
+function renderAll(L){
+  const rows = ROWS.filter(r => {
+    if (F.sect && (r.sect || "未注") !== F.sect) return false;
+    if (F.clean && r.bad) return false;
+    if (F.rf && r.sys !== "连续刚构") return false;
+    return true;
+  }).sort((a, b) => (a.L || 0) - (b.L || 0));
+
+  let h = `<thead><tr><th class="l">桥名</th>`
+    + ALL_COLS.slice(1).map(c => `<th class="${c[2] || ""}">${NAMED[c[0]] || c[1]}</th>`).join("")
+    + `</tr></thead><tbody>`;
+
+  rows.forEach(r => {
+    const dl = r.L ? Math.abs(r.L - L) / L : 1;
+    const on = OPEN.has(r.row);
+    const cls = (r.bad ? " warn" : "") + (dl <= 0.02 ? " hit" : "") + (on ? " open" : "");
+    const first = `<td class="l"><span class="car">${on ? "▾" : "▸"}</span>${r.name}`
+      + ` <span class="tag ${r.bad ? "w" : "g"}">${r.bad ? "待核" : "通过"}</span>`
+      + (r.sys && r.sys !== "连续刚构" ? ` <span class="tag d">${r.sys}</span>` : "")
+      + (r.L_derive ? ` <span class="tag d">跨径推算</span>` : "")
+      + (r.q_excl ? ` <span class="tag d">含0#块</span>` : "")
+      + (r.noq ? ` <span class="tag d">${r.q_na ? "量缺·不补" : "量待补"}</span>` : "") + `</td>`;
+    h += `<tr class="rec ${cls.trim()}" data-r="${r.row}">` + first
+      + ALL_COLS.slice(1).map(c => `<td class="${c[2] || ""}">${cell(r[c[0]], c[0])}</td>`).join("")
+      + `</tr>`;
+    if (on) h += `<tr class="det"><td colspan="${ALL_COLS.length}">${detail(r)}</td></tr>`;
+  });
+
+  $("#all").innerHTML = h + `</tbody>`;
+  $("#allN").textContent = `共 ${rows.length} 座 / 源表 ${ROWS.length} 行`;
+  document.querySelectorAll("tr.rec").forEach(tr => {
+    tr.onclick = () => {
+      const k = +tr.dataset.r;
+      if (OPEN.has(k)) OPEN.delete(k); else OPEN.add(k);
+      renderAll(parseFloat($("#L").value) || 100);
+    };
+  });
+}
+
+/* ---------- 图表 ---------- */
+const NS="http://www.w3.org/2000/svg";
+function chart(el, opt){
+  const W=620,H=300, ml=52,mr=16,mt=26,mb=38;
+  const iw=W-ml-mr, ih=H-mt-mb;
+  const xs = d=> ml + (d-opt.x0)/(opt.x1-opt.x0)*iw;
+  const ys = v=> mt + ih - (v-opt.y0)/(opt.y1-opt.y0)*ih;
+  const dd = (opt.y1-opt.y0) > 50 ? 0 : (opt.y1-opt.y0) > 5 ? 1 : 2;
+  let s = "";
+  // 网格
+  for(let i=0;i<=4;i++){
+    const v = opt.y0 + (opt.y1-opt.y0)*i/4, y = ys(v);
+    s += `<line x1="${ml}" y1="${y}" x2="${W-mr}" y2="${y}" stroke="#eef1f4"/>`;
+    s += `<text x="${ml-7}" y="${y+4}" text-anchor="end" font-size="10.5" fill="#9aa4ae">${nf(v,dd)}</text>`;
+  }
+  for(let i=0;i<=4;i++){
+    const d = opt.x0 + (opt.x1-opt.x0)*i/4, x = xs(d);
+    s += `<text x="${x}" y="${H-mb+16}" text-anchor="middle" font-size="10.5" fill="#9aa4ae">${nf(d,0)}</text>`;
+  }
+  s += `<line x1="${ml}" y1="${mt+ih}" x2="${W-mr}" y2="${mt+ih}" stroke="#d8dee5"/>`;
+  s += `<text x="${W-mr}" y="${H-6}" text-anchor="end" font-size="10.5" fill="#9aa4ae">主跨 (m)</text>`;
+  s += `<text x="${ml-7}" y="${mt-10}" text-anchor="end" font-size="10.5" fill="#b9c1c9">${opt.unit}</text>`;
+  // 经验带
+  if (opt.bands) opt.bands.forEach(b=>{
+    const pts = [];
+    for(let k=0;k<=20;k++){
+      const d = opt.x0+(opt.x1-opt.x0)*k/20;
+      const v = b.f(d); if(v<opt.y0||v>opt.y1) continue;
+      pts.push(`${xs(d).toFixed(1)},${ys(v).toFixed(1)}`);
+    }
+    if(pts.length>1) s += `<polyline points="${pts.join(" ")}" fill="none" stroke="${b.c}" stroke-width="1.2"
+      stroke-dasharray="5 4" opacity=".75"/>`;
+  });
+  // 当前主跨竖线
+  if (opt.mark!=null && opt.mark>=opt.x0 && opt.mark<=opt.x1){
+    s += `<line x1="${xs(opt.mark)}" y1="${mt}" x2="${xs(opt.mark)}" y2="${mt+ih}"
+      stroke="#2c62c9" stroke-width="1.4" opacity=".55"/>`;
+  }
+  // 数据点
+  opt.series.forEach(se=>{
+    (se.data || opt.data || ROWS).forEach(r=>{
+      const v = se.get(r); if(v==null) return;
+      const x = xs(r.L), y = ys(v);
+      if(y<mt-2||y>mt+ih+2) return;
+      s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${se.r||3.6}"
+        fill="${se.c}" fill-opacity="${r.bad?0.25:0.72}" stroke="${se.c}" stroke-width="1"/>`;
+    });
+  });
+  // 标注推荐点
+  if (opt.point){
+    const {x,y,c,label} = opt.point;
+    const px = xs(x), py = ys(y), right = px < W*0.62;
+    s += `<circle cx="${px}" cy="${py}" r="5" fill="#fff" stroke="${c}" stroke-width="2.4"/>`;
+    s += `<text x="${right?px+10:px-10}" y="${py-9}" text-anchor="${right?"start":"end"}"
+      font-size="10.5" fill="${c}" font-weight="600">${label}</text>`;
+  }
+  el.innerHTML = s;
+  el.setAttribute("viewBox",`0 0 ${W} ${H}`);
+}
+
+/* ---------- 主流程 ---------- */
+function run(){
+  let L = parseFloat($("#L").value);
+  if (!L || L<20) L = 100;
+  const B = parseFloat($("#B").value) || null;
+  const rec = recommend(L, B);
+
+  // 顶部信息
+  $("#sub").innerHTML = `源表 <b>${META.src}</b> · ${META.n_rows} 座实桥 · 主跨 <b>${META.L_min}~${META.L_max} m</b> · `
+    + `刚构通过 <b>${META.n_clean}</b> 座（量 ${META.n_quant} 座）`
+    + (META.n_lianxu ? ` · 连续梁 ${META.n_lianxu} 座另列` : "")
+    + (META.n_qexcl ? ` · ${META.n_qexcl} 座含量含 0# 块` : "");
+  $("#fSrc").textContent = `实桥 ${META.n_rows} 座 · 主跨 ${META.L_min}~${META.L_max} m`;
+  $("#hint").innerHTML = `当前查询：主跨 <b>${nf(L,0)} m</b>`
+    + (B?`，桥宽 <b>${nf(B,1)} m</b>`:`（桥宽按同跨径中位 ${nf(rec.B,1)} m 取用）`)
+    + `　→　落档 <b>${bandOf(L)} m</b>，同档样本 <b>${(ST[bandOf(L)]||{}).n||0}</b> 座`;
+
+  renderCards(rec);
+  renderRec(rec, L);
+  renderInd(L, rec);
+  renderNear(L);
+  renderAll(L);
+
+  // 图 1：梁高
+  const chartRows = F.rf ? ROWS.filter(r=>r.sys==="连续刚构") : ROWS;
+  chart($("#c1"), {
+    x0:40, x1:230, y0:0, y1:1500, unit:"梁高 cm", mark:L, data:chartRows,
+    bands:[
+      {c:"#3b7ddd", f:d=>d*100/16.7},
+      {c:"#3b7ddd", f:d=>d*100/18.2},
+      {c:"#e8730c", f:d=>d*100/38.5},
+      {c:"#e8730c", f:d=>d*100/30.0},
+    ],
+    series:[
+      {c:"#3b7ddd", get:r=>r.h_root},
+      {c:"#e8730c", get:r=>r.h_mid},
+    ],
+    point:{x:L, y:r5(rec.hRootMed), c:"#20559c", label:`h根 ${nf(r5(rec.hRootMed),0)}cm`},
+  });
+  // 图 2：砼含量
+  chart($("#c2"), {
+    x0:40, x1:230, y0:0.6, y1:2.1, unit:"砼含量 m³/m²", mark:L, data:chartRows,
+    bands:[{c:"#9aa4ae", f:d=>1.05}, {c:"#9aa4ae", f:d=>1.30}],
+    series:[{c:"#9aa4ae", r:4, get:r=>r.conc_r}],
+  });
+}
+
+/* ---------- 交互 ---------- */
+$("#chips").innerHTML = [60,80,100,120,135,150,190,220]
+  .map(v=>`<button class="chip" data-v="${v}">${v}</button>`).join("");
+document.addEventListener("click", e=>{
+  const c = e.target.closest(".chip");
+  if(!c) return;
+  $("#L").value = c.dataset.v; $("#sl").value = c.dataset.v;
+  document.querySelectorAll(".chip").forEach(x=>x.classList.toggle("on", x===c));
+  run();
+});
+$("#L").addEventListener("input", ()=>{ $("#sl").value = $("#L").value; run(); });
+$("#B").addEventListener("input", run);
+$("#sl").addEventListener("input", ()=>{ $("#L").value = $("#sl").value; run(); });
+$("#fSect").addEventListener("change", e=>{ F.sect = e.target.value; renderAll(parseFloat($("#L").value)||100); });
+$("#fClean").addEventListener("change", e=>{ F.clean = e.target.checked; renderAll(parseFloat($("#L").value)||100); });
+$("#fRF").addEventListener("change", e=>{ F.rf = e.target.checked; buildSectOptions(); run(); });
+
+// 断面下拉（计数跟随「仅连续刚构」筛选）
+function buildSectOptions(){
+  const base = ROWS.filter(r=>!F.rf || r.sys==="连续刚构");
+  const sects = {};
+  base.forEach(r=>{ const k=r.sect||"未注"; sects[k]=(sects[k]||0)+1; });
+  const cur = F.sect;
+  $("#fSect").innerHTML = `<option value="">全部断面（${base.length}）</option>` +
+    Object.entries(sects).sort((a,b)=>b[1]-a[1])
+      .map(([k,v])=>`<option value="${k}">${k}（${v}）</option>`).join("");
+  $("#fSect").value = cur;
+}
+buildSectOptions();
+
+document.querySelector('.chip[data-v="100"]')?.classList.add("on");
+run();
+</script>
+</body></html>

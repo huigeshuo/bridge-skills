@@ -1,7 +1,9 @@
 # bridge-skills
 
 > 桥梁设计辅助技能集：**参数化出草图，Excel 出指标**。
-> 三个独立可用的 Python 脚本，同时内嵌 AI 助手（WorkBuddy / Claude Skill）的技能描述文件。
+> 四个独立可用的 Python 脚本，同时内嵌 AI 助手（WorkBuddy / Claude Skill）的技能描述文件。
+
+**在线工具**：[连续刚构箱梁构造尺寸速查](https://huigeshuo.github.io/bridge-skills/) —— 输入主跨，出推荐梁高、底宽与技术指标
 
 ## 包含什么
 
@@ -10,8 +12,9 @@
 | `bridge-sketch/` | 斜拉桥立面布置草图，按跨径与索距自动排索 | 跨径 / 塔高 / 索距 → SVG |
 | `tied-arch-sketch/` | 系杆拱桥（下承式 / 中承式）立面草图 | 净跨 / 矢高 / 吊杆间距 → SVG |
 | `box-girder-index/` | 箱梁材料指标库，从汇总表提取砼与钢绞线含量 | 钢束含量汇总表.xlsx → 指标 JSON + 看板 |
+| `continuous-girder-lookup/` | 连续刚构箱梁构造尺寸速查，按主跨查推荐尺寸与指标 | 主跨跨径 → 在线页面 / 单文件 HTML |
 
-三者互不依赖，可单独取用。
+四者互不依赖，可单独取用。
 
 ## 环境
 
@@ -72,15 +75,32 @@ python box-girder-index/scripts/extract_indicators.py \
 
 指标口径与校核阈值见 `box-girder-index/references/指标口径与校核规则.md`。
 
+### 4. 连续刚构箱梁构造尺寸速查
+
+在线直接用：<https://huigeshuo.github.io/bridge-skills/>
+
+本地重建页面（用仓库里已脱敏的示例数据）：
+
+```bash
+cd continuous-girder-lookup
+cp example_data.json data.json
+python build.py     # 产出 index.html，双击打开即可
+```
+
+换成自己的数据：用 `extract.py` 从 Excel 提取出 `data.json`，再跑 `build.py`。
+详细说明见 `continuous-girder-lookup/README.md`。
+
 ## 在 AI 助手里用
 
-三个目录都是标准 Skill 结构（`SKILL.md` + `scripts/` + `references/`），
+前三个目录都是标准 Skill 结构（`SKILL.md` + `scripts/` + `references/`），
 整目录放进助手的 skills 目录即可被自动识别调用：
 
 - WorkBuddy：`~/.workbuddy/skills/`
 - Claude Code：`~/.claude/skills/`
 
 `SKILL.md` 里的 description 就是触发条件，直接说「画一张 130+280+90 的斜拉桥立面草图」即可。
+
+第四个 `continuous-girder-lookup/` 是独立的网页工具，不依赖 AI 助手，浏览器打开就能用。
 
 ## 关于数据
 
@@ -89,6 +109,10 @@ python box-girder-index/scripts/extract_indicators.py \
 
 真实指标库（含具体工程名与工程量）不入库——`.gitignore` 已排除
 `box-girder-index/data/*.json` 和所有 `*.xlsx`，只放行 example 那份。
+
+`continuous-girder-lookup/example_data.json` 是**已脱敏的完整数据**（34 条），
+桥名按拼音首字母代号化（如 `LKDQ`），幅别保留中文；尺寸与工程量保持原表实测值。
+它的本地副本 `data.json` 同样被 `.gitignore` 排除。
 
 脚本本身也内置了脱敏能力：桥名、工程名可统一替换为拼音首字母代号（如 `SKGJ`），
 `--no-pinyin` 可临时关闭。
@@ -105,12 +129,21 @@ bridge-skills/
 │   ├── SKILL.md
 │   ├── references/tied_arch_bridge_geometry.md
 │   └── scripts/generate_tied_arch_sketch.py
-└── box-girder-index/
-    ├── SKILL.md
-    ├── references/指标口径与校核规则.md
-    ├── scripts/extract_indicators.py
-    ├── scripts/make_share_pack.py
-    └── data/example_indicators.json
+├── box-girder-index/
+│   ├── SKILL.md
+│   ├── references/指标口径与校核规则.md
+│   ├── scripts/extract_indicators.py
+│   ├── scripts/make_share_pack.py
+│   └── data/example_indicators.json
+├── continuous-girder-lookup/
+│   ├── README.md
+│   ├── build.py
+│   ├── extract.py
+│   ├── make_public.py
+│   ├── template.html
+│   └── example_data.json
+└── docs/
+    └── index.html          ← GitHub Pages 站点（连续刚构速查在线版）
 ```
 
 ## 许可

@@ -27,6 +27,12 @@ box-girder-index/data/*.json
 *.xls
 !examples/*.xlsx
 
+# ---------------- 连续刚构速查：真实数据与本地构建产物 ----------------
+continuous-girder-lookup/data.json
+continuous-girder-lookup/code_map.csv
+continuous-girder-lookup/index.html
+continuous-girder-lookup/publish/
+
 # ---------------- 编辑器 / 系统 ----------------
 .vscode/
 .idea/
