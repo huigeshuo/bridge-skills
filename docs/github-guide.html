@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GitHub 建仓与 Pages 部署指南</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:0;background:#f6f7f9;color:#1c2530;
+ font:15px/1.75 "Microsoft YaHei",system-ui,-apple-system,sans-serif}
+.page{max-width:900px;margin:0 auto;padding:34px 26px 80px}
+header{border-bottom:2px solid #e3e7ec;padding-bottom:16px;margin-bottom:26px}
+h1{font-size:25px;margin:0 0 6px;font-weight:600;letter-spacing:.3px}
+.sub{color:#68737d;font-size:13.5px;line-height:1.6}
+h2{font-size:19px;margin:42px 0 14px;padding-left:11px;border-left:4px solid #2c62c9;
+ font-weight:600}
+h3{font-size:16px;margin:26px 0 10px;color:#20313f;font-weight:600}
+p{margin:10px 0}
+a{color:#2c62c9;text-decoration:none}
+a:hover{text-decoration:underline}
+code{background:#eef1f5;color:#1c4f8f;padding:1.5px 5px;border-radius:3px;
+ font:13px/1.5 "Consolas","Courier New",monospace}
+pre{background:#1f2733;color:#dfe6ee;padding:14px 16px;border-radius:6px;
+ overflow-x:auto;margin:14px 0;font:13px/1.6 "Consolas","Courier New",monospace}
+pre code{background:none;color:inherit;padding:0;font-size:13px}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px;
+ background:#fff;box-shadow:0 1px 2px rgba(20,40,70,.06)}
+th,td{border:1px solid #e3e7ec;padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#eef2f7;font-weight:600;color:#20313f;white-space:nowrap}
+tr:nth-child(even) td{background:#fafbfc}
+blockquote{margin:14px 0;padding:11px 16px;background:#eef4fd;
+ border-left:4px solid #2c62c9;color:#33475c;font-size:14px}
+blockquote p{margin:4px 0}
+ul,ol{margin:10px 0;padding-left:26px}
+li{margin:5px 0}
+hr{border:0;border-top:1px solid #e3e7ec;margin:34px 0}
+footer{margin-top:50px;padding-top:16px;border-top:1px solid #e3e7ec;
+ color:#8b96a1;font-size:12.5px}
+.toc{background:#fff;border:1px solid #e3e7ec;border-radius:6px;
+ padding:14px 20px;margin:22px 0 8px;font-size:13.5px}
+.toc b{display:block;margin-bottom:7px;color:#20313f}
+.toc ol{margin:0;padding-left:20px;columns:2;column-gap:30px}
+.toc li{margin:3px 0;break-inside:avoid}
+@media(max-width:680px){.toc ol{columns:1}.page{padding:22px 16px 60px}}
+</style></head><body><div class="page">
+<header><h1>GitHub 建仓与 Pages 部署指南</h1><div class="sub">从本地 Skill 脚本与单页 HTML，到可对外分享的在线工具 —— 2026-10 实操全记录，含 3 个卡点的解法</div></header>
+<div class="toc"><b>本文目录</b><ol><li><a href="#〇-先明确三件事">〇、先明确三件事</a></li><li><a href="#一-网页端建仓库">一、网页端建仓库</a></li><li><a href="#二-把本机-Skill-打包成仓库">二、把本机 Skill 打包成仓库</a></li><li><a href="#三-敏感数据防护-公开前必做">三、敏感数据防护（公开前必做）</a></li><li><a href="#四-本地初始化与首次提交">四、本地初始化与首次提交</a></li><li><a href="#五-认证-HTTPS-走不通-直接用-SSH">五、认证：HTTPS 走不通，直接用 SSH</a></li><li><a href="#六-修改已推提交的作者信息">六、修改已推提交的作者信息</a></li><li><a href="#七-GitHub-Pages-部署">七、GitHub Pages 部署</a></li><li><a href="#八-国内访问速度的现实">八、国内访问速度的现实</a></li><li><a href="#九-日常更新流程">九、日常更新流程</a></li><li><a href="#十-排错速查">十、排错速查</a></li><li><a href="#十一-一次性命令清单">十一、一次性命令清单</a></li><li><a href="#十二-本次实操记录">十二、本次实操记录</a></li><li><a href="#附-三条铁律">附：三条铁律</a></li></ol></div>
+<blockquote><p>从零把一个本地工具（Skill 脚本、单页 HTML）发布到 GitHub，并配置成可分享的在线网页。</p><p>本文是按 2026-10 实操 <code>huigeshuo/bridge-skills</code> 的全过程整理，包含 3 个卡了半小时以上的坑和对应解法，可直接照抄命令。</p><p>环境：Windows + Git Bash（WorkBuddy 自带 PortableGit），无独立 IDE 授权环境。</p></blockquote>
+<hr>
+<h2 id="〇-先明确三件事">〇、先明确三件事</h2>
+<table><thead><tr><th>要素</th><th>说明</th><th>本例取值</th></tr></thead><tbody><tr><td>仓库</td><td>代码和文档的存放地，Public 即公开可搜</td><td><code>huigeshuo/bridge-skills</code></td></tr><tr><td>Pages</td><td>把仓库某个目录当静态站点托管，给一条网址</td><td><code>huigeshuo.github.io/bridge-skills/</code></td></tr><tr><td>认证</td><td>本机往 GitHub 写的凭证，<strong>只走 SSH</strong></td><td>ed25519 密钥</td></tr></tbody></table>
+<p>一句话原则：<strong>GitHub 负责存，Pages 负责展示，SSH 负责让本机能写进去。</strong></p>
+<hr>
+<h2 id="一-网页端建仓库">一、网页端建仓库</h2>
+<h3 id="1-1-操作">1.1 操作</h3>
+<p>打开 <code>https://github.com/new</code>，按下表填写：</p>
+<table><thead><tr><th>位置</th><th>填什么</th></tr></thead><tbody><tr><td>Owner</td><td>自己账号，不选组织</td></tr><tr><td>Repository name</td><td>全小写、短横线分词，如 <code>bridge-skills</code></td></tr><tr><td>Description</td><td>一句话说清做什么，可留空后补</td></tr><tr><td>Visibility</td><td>Public（当作品集）/ Private（含未公开资料）</td></tr><tr><td>Add a README file</td><td><strong>Off</strong></td></tr><tr><td>Add .gitignore</td><td><strong>None</strong></td></tr><tr><td>Add a license</td><td><strong>No license</strong></td></tr></tbody></table>
+<h3 id="1-2-三个开关为什么必须全关">1.2 三个开关为什么必须全关</h3>
+<p>勾选任意一项，GitHub 会立刻用网页端替你生成一个<strong>初始提交</strong>。等本地再推上去，两边历史没有共同祖先，git 直接报：</p>
+<pre><code>! [rejected]        main -&gt; main (fetch first)</code></pre>
+<p>或</p>
+<pre><code>fatal: refusing to merge unrelated histories</code></pre>
+<p>这时只能 <code>git pull --allow-unrelated-histories</code> 硬合，或 <code>git push -f</code> 强推，都会多一步麻烦。<strong>本地已经有内容时，永远让 GitHub 建一个纯空仓库。</strong></p>
+<p>README、<code>.gitignore</code>、<code>LICENSE</code> 三样本地自己写，内容更准确，还能随代码一起进版本管理。</p>
+<h3 id="1-3-建完的标志">1.3 建完的标志</h3>
+<p>页面跳到 <code>Quick setup — if you&#x27;ve done this kind of thing before</code>，给出一串 <code>git remote add origin ...</code> 命令。看到这页就对了，<strong>那一屏命令不用执行</strong>，因为我们本地已有提交。</p>
+<hr>
+<h2 id="二-把本机-Skill-打包成仓库">二、把本机 Skill 打包成仓库</h2>
+<p>自研 Skill 的标准结构是 <code>SKILL.md</code> + <code>scripts/</code> + <code>references/</code>，整目录可直接当仓库子目录。</p>
+<h3 id="2-1-组装骨架">2.1 组装骨架</h3>
+<pre><code>SRC=&quot;$HOME/.workbuddy/skills&quot;          # 本机 skills 目录
+REPO=&quot;/f/SZH 文件夹/WorkBuddy/bridge-skills&quot;   # 目标仓库，放持久目录，别放会话临时目录
+mkdir -p &quot;$REPO&quot;
+cd &quot;$REPO&quot;
+mkdir -p bridge-sketch tied-arch-sketch box-girder-index/data box-girder-index/scripts
+cp -r &quot;$SRC/bridge-sketch/.&quot; ./bridge-sketch/
+cp -r &quot;$SRC/tied-arch-sketch/.&quot; ./tied-arch-sketch/
+cp &quot;$SRC/box-girder-index/SKILL.md&quot; ./box-girder-index/
+cp -r &quot;$SRC/box-girder-index/scripts/.&quot; ./box-girder-index/scripts/</code></pre>
+<blockquote><p>仓库目录<strong>不要放在 Obsidian 库里</strong>。<code>.git</code> 目录会被 Obsidian 反复索引，几千个对象文件会让打开库明显变慢。</p></blockquote>
+<h3 id="2-2-逐份检查脚本依赖">2.2 逐份检查脚本依赖</h3>
+<pre><code>grep -hE &quot;^(import|from) [a-zA-Z_]&quot; */scripts/*.py | sort -u</code></pre>
+<p>只允许标准库 + 少量常见第三方（如 <code>openpyxl</code>）。有重依赖就在 README 里写清安装命令，别让人 clone 完跑不起来。</p>
+<h3 id="2-3-先跑一遍-README-里的命令必须实测过">2.3 先跑一遍，README 里的命令必须实测过</h3>
+<pre><code>mkdir -p out
+python bridge-sketch/scripts/generate_bridge_sketch.py --main-span 280 --side-span-left 130 --side-span-right 90 -o out/t1.svg
+python tied-arch-sketch/scripts/generate_tied_arch_sketch.py --arch-span 320 --rise 56.44 --axis parabola -o out/t2.svg
+ls -l out/</code></pre>
+<p>跑不通的命令写进 README 等于挖坑。<strong>示例参数一定要从脚本的 <code>add_argument</code> 里核对</strong>，不能凭印象写。</p>
+<hr>
+<h2 id="三-敏感数据防护-公开前必做">三、敏感数据防护（公开前必做）</h2>
+<p>这是整件事里最容易出事故的环节。工程类工具的数据文件往往带真实项目名和精确工程量。</p>
+<h3 id="3-1-gitignore-白名单策略">3.1 <code>.gitignore</code> 白名单策略</h3>
+<p>原则：<strong>默认全拦，只放行示例</strong>。</p>
+<pre><code># 真实指标数据
+data/*.json
+!data/example_indicators.json
+
+# 设计院原始汇总表
+*.xlsx
+*.xls
+
+# 构建产物与临时文件
+out/
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.DS_Store
+Thumbs.db</code></pre>
+<h3 id="3-2-验证规则真的生效">3.2 验证规则真的生效</h3>
+<pre><code>git check-ignore -v box-girder-index/data/box_girder_indicators.json</code></pre>
+<p>有输出（打印命中哪条规则）才算拦住。<strong>没有输出就是没拦住，必须回去改。</strong></p>
+<h3 id="3-3-上线前用真实值逐项搜一遍">3.3 上线前用真实值逐项搜一遍</h3>
+<pre><code>python - &lt;&lt;&#x27;EOF&#x27;
+import json, io
+lib = json.load(io.open(&#x27;真实数据.json&#x27;, encoding=&#x27;utf-8&#x27;))
+html = io.open(&#x27;docs/index.html&#x27;, encoding=&#x27;utf-8&#x27;).read()
+vals = set()
+for r in lib:
+    for k in (&#x27;project&#x27;, &#x27;block&#x27;, &#x27;bridge_src&#x27;, &#x27;source_file&#x27;, &#x27;name&#x27;):
+        v = r.get(k)
+        if isinstance(v, str) and v.strip() and v != &#x27;—&#x27;:
+            vals.add(v.strip())
+hit = sorted(v for v in vals if v in html)
+print(&#x27;候选敏感值 %d 个，命中 %d 个&#x27; % (len(vals), len(hit)))
+for h in hit[:15]:
+    print(&#x27;   &gt;&gt;&gt;&#x27;, h)
+EOF</code></pre>
+<p><strong>判读命中结果</strong>：如果命中的是 <code>A</code>、<code>C</code>、<code>H-2</code> 这种单字母或极短代号，属于「字母串恰好出现在 HTML 标签/样式里」的误报，看上下文即可排除；命中 <code>陆口大桥</code>、<code>WD高速</code> 这种完整实名，就是真泄露，必须处理。</p>
+<h3 id="3-4-脱敏到哪一级">3.4 脱敏到哪一级</h3>
+<table><thead><tr><th>级别</th><th>做法</th><th>适用</th></tr></thead><tbody><tr><td>代号化</td><td>桥名换成 <code>LKDQ</code> <code>FHDD</code> 拼音首字母，保留明细</td><td>同行看构造尺寸规律</td></tr><tr><td>统计摘要</td><td>只给分区间统计，不给逐条明细</td><td>最稳妥，本文选的这级</td></tr></tbody></table>
+<p>页面里显式写一句「本页为统计摘要，不含工程名、桥名等可溯源信息」，比藏在角落更有说服力。</p>
+<hr>
+<h2 id="四-本地初始化与首次提交">四、本地初始化与首次提交</h2>
+<h3 id="4-1-初始化并写齐全套文件">4.1 初始化并写齐全套文件</h3>
+<pre><code>cd &quot;/f/SZH 文件夹/WorkBuddy/bridge-skills&quot;
+git init -b main</code></pre>
+<p>必备四个文件：</p>
+<table><thead><tr><th>文件</th><th>作用</th></tr></thead><tbody><tr><td><code>README.md</code></td><td>首页说明：包含什么、怎么跑、数据在哪</td></tr><tr><td><code>.gitignore</code></td><td>敏感数据白名单</td></tr><tr><td><code>.gitattributes</code></td><td>换行统一，避免 Windows 提交后整个文件变成改动</td></tr><tr><td><code>LICENSE</code></td><td>声明授权；MIT 即「随便用，出事别找我」</td></tr></tbody></table>
+<p><code>.gitattributes</code> 内容：</p>
+<pre><code>* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.xlsx binary</code></pre>
+<h3 id="4-2-配置提交身份-决定是否泄露邮箱">4.2 配置提交身份（决定是否泄露邮箱）</h3>
+<p><strong>这一步务必在首次 commit 之前做。</strong> commit 的作者邮箱是明文写死在提交对象里的，推上去就永久公开。</p>
+<p>先查自己的用户 ID：</p>
+<pre><code>curl -s &quot;https://api.github.com/users/huigeshuo&quot; | grep -o &#x27;&quot;id&quot;: *[0-9]*&#x27;
+# &quot;id&quot;: 305686175</code></pre>
+<p>用带 ID 的 noreply 地址（GitHub 官方推荐格式）：</p>
+<pre><code>git config --global user.name &quot;huigeshuo&quot;
+git config --global user.email &quot;305686175+huigeshuo@users.noreply.github.com&quot;</code></pre>
+<p><strong>为什么不直接用 <code>huigeshuo@users.noreply.github.com</code></strong>：不带数字 ID 的旧格式 GitHub 不认，贡献图不点亮，commit 页显示灰色默认头像。带了 ID 才既隐私又正常计贡献。</p>
+<p>再开网页端两个开关（<code>https://github.com/settings/emails</code>）：</p>
+<ul><li><strong>Keep my email addresses private</strong> → 网页上在线编辑文件也不会带出真实邮箱</li><li><strong>Block command line pushes that expose my email</strong> → 别的机器误用真实邮箱提交时，git 直接拒绝推送，而不是默默泄露</li></ul>
+<h3 id="4-3-提交并核对">4.3 提交并核对</h3>
+<pre><code>git add -A
+git status --short              # 看清单，确认没有真实数据文件
+git commit -m &quot;初始提交：工具集&quot;
+git log --format=&quot;%h  %an &lt;%ae&gt;  %s&quot;</code></pre>
+<p><code>%ae</code> 输出的必须是那个带 ID 的 noreply 地址。</p>
+<hr>
+<h2 id="五-认证-HTTPS-走不通-直接用-SSH">五、认证：HTTPS 走不通，直接用 SSH</h2>
+<h3 id="5-1-三种方式实测结果">5.1 三种方式实测结果</h3>
+<table><thead><tr><th>方式</th><th>结果</th><th>原因</th></tr></thead><tbody><tr><td>HTTPS + 浏览器弹窗授权</td><td>✗ 卡死 180 秒无响应</td><td>后台会话里弹不出窗口，<code>git push</code> 就一直等</td></tr><tr><td><code>git-credential-manager github login --device</code></td><td>✗ 30 秒无输出</td><td>设备码流程同样依赖交互式终端</td></tr><tr><td><strong>SSH 密钥</strong></td><td>✓ 一次通过</td><td>无交互，纯密钥握手</td></tr></tbody></table>
+<p><strong>结论：这类无图形界面的自动化环境，一律走 SSH，不要浪费时间试弹窗。</strong></p>
+<h3 id="5-2-生成密钥并贴到-GitHub">5.2 生成密钥并贴到 GitHub</h3>
+<pre><code>mkdir -p ~/.ssh &amp;&amp; chmod 700 ~/.ssh
+ssh-keygen -t ed25519 -C &quot;huigeshuo bridge-skills&quot; -f ~/.ssh/id_ed25519 -N &quot;&quot;
+cat ~/.ssh/id_ed25519.pub</code></pre>
+<p>复制输出的整行（<code>ssh-ed25519</code> 开头到结尾，中途不能断行），打开：</p>
+<p><strong><code>https://github.com/settings/ssh/new</code></strong></p>
+<ul><li>Title：随便起，给自己认，如 <code>家用台式机</code></li><li>Key type：保持 <code>Authentication Key</code></li><li>Key：粘贴整行</li><li>点 <strong>Add SSH key</strong></li></ul>
+<blockquote><p>公钥不是密码，贴到哪里都不怕泄露；<strong>私钥 <code>id_ed25519</code>（无 .pub 后缀）永远不发出去</strong>。</p></blockquote>
+<h3 id="5-3-验证握手">5.3 验证握手</h3>
+<pre><code>ssh-keygen -lf ~/.ssh/id_ed25519.pub     # 记下指纹，和网页上显示的对上
+ssh -T -o StrictHostKeyChecking=accept-new git@github.com</code></pre>
+<p>成功标志：</p>
+<pre><code>Hi huigeshuo! You&#x27;ve successfully authenticated, but GitHub does not provide shell access.</code></pre>
+<p>这句出现就说明贴上去的正是本机这把钥匙。</p>
+<h3 id="5-4-换-remote-并推送">5.4 换 remote 并推送</h3>
+<pre><code>git config core.quotepath false         # 中文文件名不显示成 \344\270\255
+git remote add origin git@github.com:huigeshuo/bridge-skills.git
+# 若已存在 HTTPS 地址：git remote set-url origin git@github.com:huigeshuo/bridge-skills.git
+git push -u origin main</code></pre>
+<h3 id="5-5-公司网络只开-443-时的备选">5.5 公司网络只开 443 时的备选</h3>
+<pre><code>timeout 6 bash -c &#x27;cat &lt; /dev/null &gt; /dev/tcp/github.com/22&#x27; &amp;&amp; echo &quot;22 通&quot; || echo &quot;22 不通&quot;
+timeout 6 bash -c &#x27;cat &lt; /dev/null &gt; /dev/tcp/ssh.github.com/443&#x27; &amp;&amp; echo &quot;443 通&quot;</code></pre>
+<p>22 不通就改 <code>~/.ssh/config</code>：</p>
+<pre><code>Host github.com
+  HostName ssh.github.com
+  Port 443
+  User git</code></pre>
+<hr>
+<h2 id="六-修改已推提交的作者信息">六、修改已推提交的作者信息</h2>
+<p>如果已经推上去了才发现邮箱不对，<strong>仓库刚建、无他人协作时</strong>可以安全改写历史。</p>
+<pre><code>cd &quot;/f/SZH 文件夹/WorkBuddy/bridge-skills&quot;
+git config user.email &quot;305686175+huigeshuo@users.noreply.github.com&quot;
+
+FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --env-filter &#x27;
+export GIT_AUTHOR_EMAIL=&quot;305686175+huigeshuo@users.noreply.github.com&quot;
+export GIT_COMMITTER_EMAIL=&quot;305686175+huigeshuo@users.noreply.github.com&quot;
+export GIT_AUTHOR_NAME=&quot;huigeshuo&quot;
+export GIT_COMMITTER_NAME=&quot;huigeshuo&quot;
+&#x27; -- --all
+
+git push -f origin main</code></pre>
+<h3 id="一个必须知道的事实">一个必须知道的事实</h3>
+<p>改写历史<strong>不等于删除</strong>。实测旧提交 SHA 仍然可通过 API 访问：</p>
+<pre><code>旧提交 63596ce: HTTP 200
+旧提交 bd9e519: HTTP 200</code></pre>
+<p>它们已经不在 <code>main</code> 分支上，但 GitHub 保留着对象，知道 SHA 就能打开。爬虫和第三方代码搜索站也可能早已抓取。</p>
+<p><strong>所以：真实邮箱一旦推上去，就当它已公开。唯一的防线是提交前就配好 noreply。</strong></p>
+<hr>
+<h2 id="七-GitHub-Pages-部署">七、GitHub Pages 部署</h2>
+<h3 id="7-1-只能网页操作">7.1 只能网页操作</h3>
+<p>Pages 的开关没有暴露给 SSH，必须手动点：<strong><code>https://github.com/USER/REPO/settings/pages</code></strong></p>
+<ol><li><strong>Source</strong> 选 <code>Deploy from a branch</code></li><li><strong>Branch</strong> 左边 <code>main</code>，右边目录<strong>从 <code>/(root)</code> 改成 <code>/docs</code></strong></li><li>点 <strong>Save</strong></li></ol>
+<blockquote><p>第 2 步的目录是最容易漏的。选成 <code>/(root)</code> 而文件在 <code>docs/</code> 里，结果就是 404，且报错信息不会告诉你原因。</p></blockquote>
+<h3 id="7-2-目录与访问路径的对应">7.2 目录与访问路径的对应</h3>
+<pre><code>仓库/
+└── docs/
+    ├── index.html      → https://USER.github.io/REPO/
+    └── box-girder.html → https://USER.github.io/REPO/box-girder.html</code></pre>
+<p><code>index.html</code> 就是首页，其他 <code>.html</code> 按文件名直接访问，不需要额外配置路由。</p>
+<p><strong>文件命名建议用英文短横线</strong>：中文文件名在 URL 里会变成一长串百分号编码，发出去很难看，也容易在聊天软件里被截断。</p>
+<h3 id="7-3-构建期-404-是正常的">7.3 构建期 404 是正常的</h3>
+<p>保存后页面顶部出现：</p>
+<pre><code>Your site is live at https://USER.github.io/REPO/</code></pre>
+<p>但它此刻还没真就绪。首次部署要跑一次构建，<strong>1~2 分钟</strong>；之后每次推送新增文件，也会有同样的延迟。</p>
+<p>轮询等待：</p>
+<pre><code>for i in 1 2 3 4 5; do
+  code=$(curl -s -o /tmp/p.html -w &quot;%{http_code}&quot; --max-time 45 &quot;https://USER.github.io/REPO/page.html&quot;)
+  echo &quot;第 $i 次: HTTP $code&quot;
+  [ &quot;$code&quot; = &quot;200&quot; ] &amp;&amp; break
+  sleep 25
+done
+grep -o &quot;&lt;title&gt;[^&lt;]*&lt;/title&gt;&quot; /tmp/p.html</code></pre>
+<h3 id="7-4-上线后核对三件事">7.4 上线后核对三件事</h3>
+<pre><code># 1. 状态与源分支
+curl -s &quot;https://api.github.com/repos/USER/REPO/pages&quot; \
+  | python -c &quot;import json,sys; d=json.load(sys.stdin); print(d.get(&#x27;status&#x27;), d.get(&#x27;source&#x27;))&quot;
+
+# 2. 文件确实在远端
+curl -s &quot;https://api.github.com/repos/USER/REPO/contents/docs&quot; | grep -o &#x27;&quot;name&quot;: *&quot;[^&quot;]*&quot;&#x27;
+
+# 3. 页面真的能打开且标题正确
+curl -s -o /dev/null -w &quot;%{http_code}  %{size_download}字节\n&quot; &quot;https://USER.github.io/REPO/&quot;</code></pre>
+<hr>
+<h2 id="八-国内访问速度的现实">八、国内访问速度的现实</h2>
+<p><code>github.io</code> 的 IP（<code>185.199.108.153</code>）在国内被限速。本机 curl 实测：</p>
+<table><thead><tr><th>阶段</th><th>耗时</th></tr></thead><tbody><tr><td>DNS 解析</td><td>0.0001 s（缓存）</td></tr><tr><td>TCP 连接</td><td>0.0006 s</td></tr><tr><td>TLS 握手</td><td>3.8 ~ 4.8 s</td></tr><tr><td>首字节</td><td>5.8 s</td></tr><tr><td>总计</td><td>33 ~ 36 s</td></tr></tbody></table>
+<p>65 KB 传 30 秒 ≈ 2 KB/s。</p>
+<p><strong>但 curl 的数字不代表浏览器体验。</strong> 浏览器有 HTTP/2 多路复用、TLS session 复用、磁盘缓存，实测「能打开，可以接受」。判断标准应该是<strong>手机 + 移动流量</strong>实测，那才接近甲方和同事的真实场景。</p>
+<p>确实需要国内提速时的备选：</p>
+<table><thead><tr><th>方案</th><th>国内速度</th><th>门槛</th></tr></thead><tbody><tr><td>腾讯云 EdgeOne Pages</td><td>快，有国内节点</td><td>注册腾讯云，免费额度够用，免费子域名免备案</td></tr><tr><td>Cloudflare Pages</td><td>中等，时快时慢</td><td>注册即可，<code>*.pages.dev</code> 免费</td></tr><tr><td>Gitee Pages</td><td>快</td><td>需实名，免费版已收紧</td></tr></tbody></table>
+<p>另有一条兜底：<strong>单文件 HTML 直接微信发过去，双击就开</strong>，零延迟、不依赖网络。在线链接的价值只在于「对方随手一点就能看」。</p>
+<hr>
+<h2 id="九-日常更新流程">九、日常更新流程</h2>
+<pre><code>cd &quot;/f/SZH 文件夹/WorkBuddy/bridge-skills&quot;
+git add -A
+git commit -m &quot;更新说明&quot;
+git push</code></pre>
+<p>推送后 Pages 约 1 分钟自动重建，<strong>不需要再进设置页面</strong>。</p>
+<h3 id="一个必须守住的纪律">一个必须守住的纪律</h3>
+<p>如果 <code>docs/index.html</code> 是由 <code>build.py</code> 之类的脚本从数据生成的，<strong>不要直接编辑 <code>docs/index.html</code></strong>——下次重新生成会覆盖掉。正确链路是：</p>
+<pre><code>cd continuous-girder-lookup
+cp /path/to/新的data.json .
+python build.py
+cp index.html ../docs/index.html
+cd .. &amp;&amp; git add -A &amp;&amp; git commit -m &quot;更新数据&quot; &amp;&amp; git push</code></pre>
+<hr>
+<h2 id="十-排错速查">十、排错速查</h2>
+<table><thead><tr><th>现象</th><th>原因</th><th>解决</th></tr></thead><tbody><tr><td><code>Please tell me who you are</code></td><td>没配 <code>user.name</code> / <code>user.email</code></td><td><code>git config --global user.email &quot;...noreply...&quot;</code></td></tr><tr><td><code>git push</code> 卡住几分钟无输出</td><td>弹窗认证在无图形环境起不来</td><td>改 SSH，别重试 HTTPS</td></tr><tr><td><code>! [rejected] (fetch first)</code></td><td>远端有网页端生成的初始提交</td><td>建库时三个开关全关；已发生则 <code>git pull --allow-unrelated-histories</code></td></tr><tr><td>Pages 打开 404</td><td>目录选成 <code>/(root)</code>，或构建未完</td><td>回设置改 <code>/docs</code>；等 1~2 分钟再刷</td></tr><tr><td>Pages 页面样式怪、显示文件列表</td><td>该目录没有 <code>index.html</code></td><td>确认首页文件名就是 <code>index.html</code></td></tr><tr><td>Topics 报「超过 50 字符」</td><td>整串粘贴，被当成一个 topic</td><td>输入一个 → 回车 → 再输下一个</td></tr><tr><td>Topics 中文被拒</td><td>只允许小写字母、数字、连字符</td><td>用英文标签</td></tr><tr><td>推送被拒、提示邮箱将泄露</td><td>开了 Block 开关但用了真实邮箱</td><td>改 <code>user.email</code> 为 noreply 再推</td></tr><tr><td>中文文件名显示成 <code>\344\270\255</code></td><td>git 默认转义</td><td><code>git config core.quotepath false</code></td></tr><tr><td><code>git commit</code> 报「无需提交」但远端没更新</td><td>只是 commit 成功但 push 没走完</td><td>单独执行 <code>git push origin main</code>，看退出码</td></tr></tbody></table>
+<hr>
+<h2 id="十一-一次性命令清单">十一、一次性命令清单</h2>
+<p>从零到上线的完整命令，替换 <code>USER</code> / <code>REPO</code> 即可复用：</p>
+<pre><code># 1. 身份（只配一次，全局生效）
+curl -s &quot;https://api.github.com/users/USER&quot; | grep -o &#x27;&quot;id&quot;: *[0-9]*&#x27;
+git config --global user.name &quot;USER&quot;
+git config --global user.email &quot;ID+USER@users.noreply.github.com&quot;
+
+# 2. 本地初始化
+cd /path/to/REPO
+git init -b main
+git config core.quotepath false
+git add -A &amp;&amp; git status --short
+git commit -m &quot;初始提交&quot;
+
+# 3. SSH 密钥（只配一次）
+ssh-keygen -t ed25519 -C &quot;USER $REPO&quot; -f ~/.ssh/id_ed25519 -N &quot;&quot;
+cat ~/.ssh/id_ed25519.pub        # 贴到 https://github.com/settings/ssh/new
+ssh -T git@github.com            # 应回 Hi USER!
+
+# 4. 接远程并推送
+git remote add origin git@github.com:USER/REPO.git
+git push -u origin main
+
+# 5. 网页端启 Pages：Settings → Pages → main + /docs → Save
+# 6. 等 1~2 分钟后验证
+curl -s -o /dev/null -w &quot;%{http_code}\n&quot; &quot;https://USER.github.io/REPO/&quot;</code></pre>
+<hr>
+<h2 id="十二-本次实操记录">十二、本次实操记录</h2>
+<table><thead><tr><th>项目</th><th>结果</th></tr></thead><tbody><tr><td>仓库</td><td><code>https://github.com/huigeshuo/bridge-skills</code></td></tr><tr><td>在线工具 1</td><td><code>https://huigeshuo.github.io/bridge-skills/</code> （连续刚构箱梁构造尺寸速查）</td></tr><tr><td>在线工具 2</td><td><code>https://huigeshuo.github.io/bridge-skills/box-girder.html</code> （箱梁技术指标速查）</td></tr><tr><td>内容</td><td>4 个工具目录 + MIT 许可 + 12 个 Topics</td></tr><tr><td>卡点 1</td><td>HTTPS / GCM 设备码认证在无头环境全部失效，耗时约 1 小时，最终 SSH 解决</td></tr><tr><td>卡点 2</td><td>建库时若勾 README 会产生历史冲突，所幸未勾</td></tr><tr><td>卡点 3</td><td>Pages 首次构建 + 新增文件后均有 404 窗口期，误判为配置错误</td></tr><tr><td>数据安全</td><td>92 条箱梁指标 + 34 条刚构桥例<strong>全部留在本地</strong>，仓库零真实工程名</td></tr></tbody></table>
+<hr>
+<h2 id="附-三条铁律">附：三条铁律</h2>
+<ol><li><strong>建库三个开关全关</strong>，本地内容自己带。</li><li><strong>首次 commit 前配好 noreply 邮箱</strong>，推上去就撤不回。</li><li><strong>公开前用真实值逐个 grep</strong>，工具类仓库的数据泄露只在这一步能拦住。</li></ol>
+<footer>本文由 Markdown 转换生成 · 如需修改请编辑源文件 <code>github-guide.md</code></footer>
+</div></body></html>

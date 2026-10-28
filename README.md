@@ -7,6 +7,7 @@
 
 - [连续刚构箱梁构造尺寸速查](https://huigeshuo.github.io/bridge-skills/) —— 输入主跨，出推荐梁高、底宽与技术指标
 - [箱梁技术指标速查](https://huigeshuo.github.io/bridge-skills/box-girder.html) —— 各跨径箱梁的砼 / 钢绞线含量统计摘要
+- [GitHub 建仓与 Pages 部署指南](https://huigeshuo.github.io/bridge-skills/github-guide.html) —— 本仓库是怎么发布成在线工具的完整流程
 
 ## 包含什么
 
@@ -145,10 +146,25 @@ bridge-skills/
 │   ├── make_public.py
 │   ├── template.html
 │   └── example_data.json
+├── tools/
+│   └── md2html.py          ← 通用小工具：Markdown → 单文件 HTML
 └── docs/                   ← GitHub Pages 站点
     ├── index.html          ← 连续刚构箱梁构造尺寸速查（在线版）
-    └── box-girder.html     ← 箱梁技术指标速查（在线版）
+    ├── box-girder.html     ← 箱梁技术指标速查（在线版）
+    ├── github-guide.html   ← GitHub 建仓与 Pages 部署指南（在线版）
+    └── github-guide.md     ← 同上，Markdown 源文件
 ```
+
+## 更新在线文档
+
+`docs/github-guide.html` 由同目录的 `.md` 转换而来，改完源文件重新生成即可：
+
+```bash
+python tools/md2html.py docs/github-guide.md docs/github-guide.html \
+  --title "GitHub 建仓与 Pages 部署指南" --sub "副标题"
+```
+
+`tools/md2html.py` 无第三方依赖，只覆盖技术文档常用语法（标题、代码块、表格、列表、引用、加粗、行内代码、链接）。推送后 Pages 约 1 分钟自动重建。
 
 ## 许可
 
