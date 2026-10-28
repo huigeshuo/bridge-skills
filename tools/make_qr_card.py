@@ -50,13 +50,16 @@ def make_qr(url, px=420):
     return img.resize((px, px), Image.NEAREST)
 
 
-def build_card(url, title, desc, out):
+def build_card(url, title, desc, out, footer=None, note=None, accent="#2c62c9"):
+    footer = footer or "辉歌说 · 桥梁设计辅助工具"
+    note = note or "数据已脱敏，供设计阶段参考，不替代结构计算"
+
     W, H = 750, 1000
     canvas = Image.new("RGB", (W, H), "#ffffff")
     d = ImageDraw.Draw(canvas)
 
     # 顶部色带
-    d.rectangle([0, 0, W, 9], fill="#2c62c9")
+    d.rectangle([0, 0, W, 9], fill=accent)
 
     centered(d, 62, title, font(52, True), "#152233")
     centered(d, 136, desc, font(25), "#68737d")
@@ -70,13 +73,13 @@ def build_card(url, title, desc, out):
     d.rectangle([qx - 14, qy - 14, qx + 414, qy + 414], fill="#ffffff", outline="#e6eaef", width=2)
     canvas.paste(qr, (qx, qy))
 
-    centered(d, 676, "手机扫码打开，无需安装", font(26, True), "#2c62c9")
+    centered(d, 676, "手机扫码打开，无需安装", font(26, True), accent)
     centered(d, 716, "微信、浏览器、相机均可识别", font(21), "#93a0ac")
 
     # 底部
     d.line([(120, 790), (W - 120, 790)], fill="#e6eaef", width=1)
-    centered(d, 818, "辉歌说 · 桥梁设计辅助工具", font(27, True), "#33475c")
-    centered(d, 862, "数据已脱敏，供设计阶段参考，不替代结构计算", font(19), "#93a0ac")
+    centered(d, 818, footer, font(27, True), "#33475c")
+    centered(d, 862, note, font(19), "#93a0ac")
 
     canvas.save(out)
     return out
@@ -87,6 +90,9 @@ def main():
     ap.add_argument("--url", required=True)
     ap.add_argument("--title", default="桥梁设计小工具")
     ap.add_argument("--desc", default="打开即用，无需安装")
+    ap.add_argument("--footer", default=None, help="页脚署名，默认「辉歌说 · 桥梁设计辅助工具」")
+    ap.add_argument("--note", default=None, help="页脚下方一行小字（风险提示 / 免责声明）")
+    ap.add_argument("--accent", default="#2c62c9", help="主题色，如 #2c62c9")
     ap.add_argument("--out", default="分享卡片.png")
     ap.add_argument("--qr-only", action="store_true", help="只输出纯二维码")
     a = ap.parse_args()
@@ -95,7 +101,8 @@ def main():
         make_qr(a.url, 600).save(a.out)
         print("已生成纯二维码：%s" % a.out)
     else:
-        print("已生成分享卡片：%s" % build_card(a.url, a.title, a.desc, a.out))
+        print("已生成分享卡片：%s" % build_card(a.url, a.title, a.desc, a.out,
+                                          a.footer, a.note, a.accent))
 
     # 顺带打印二维码内容，便于核对
     print("二维码指向：%s" % a.url)

@@ -148,7 +148,8 @@ bridge-skills/
 │   ├── template.html
 │   └── example_data.json
 ├── tools/
-│   └── md2html.py          ← 通用小工具：Markdown → 单文件 HTML
+│   ├── md2html.py          ← 通用小工具：Markdown → 单文件 HTML
+│   └── make_qr_card.py     ← 通用小工具：网址 → 二维码 / 竖版分享卡片
 └── docs/                   ← GitHub Pages 站点
     ├── index.html          ← 连续刚构箱梁构造尺寸速查（在线版）
     ├── box-girder.html     ← 箱梁技术指标速查（在线版）
@@ -166,6 +167,29 @@ python tools/md2html.py docs/github-guide.md docs/github-guide.html \
 ```
 
 `tools/md2html.py` 无第三方依赖，只覆盖技术文档常用语法（标题、代码块、表格、列表、引用、加粗、行内代码、链接）。推送后 Pages 约 1 分钟自动重建。
+
+## 做一张分享卡片
+
+把在线工具的网址变成可发微信的竖版卡片（750×1000，扫码即用）：
+
+```bash
+python tools/make_qr_card.py \
+  --url "https://huigeshuo.github.io/bridge-skills/tools.html" \
+  --title "桥梁设计小工具" \
+  --desc "连续刚构箱梁尺寸速查 · 箱梁技术指标速查" \
+  --out "分享卡片.png"
+```
+
+需要 `pip install qrcode pillow`。页脚署名、风险声明、主题色都可以传参，换个用途不必改代码：
+
+| 参数 | 默认 | 说明 |
+|---|---|---|
+| `--footer` | 辉歌说 · 桥梁设计辅助工具 | 页脚署名 |
+| `--note` | 数据已脱敏，供设计阶段参考… | 页脚下方一行小字，放免责 / 风险提示 |
+| `--accent` | `#2c62c9` | 顶部色带与扫码提示文字的主题色 |
+| `--qr-only` | — | 只输出纯二维码，用于 PPT 或文章配图 |
+
+生成后建议先自己扫一次再发出去；若卡片被压缩到很小，二维码可能扫不出。
 
 ## 许可
 
