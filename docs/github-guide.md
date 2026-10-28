@@ -4,6 +4,8 @@
 > 本文是按 2026-10 实操 `huigeshuo/bridge-skills` 的全过程整理，包含 3 个卡了半小时以上的坑和对应解法，可直接照抄命令。
 > 环境：Windows + Git Bash（WorkBuddy 自带 PortableGit），无独立 IDE 授权环境。
 
+**落地案例**：仓库 <https://github.com/huigeshuo/bridge-skills> ｜ 本文在线版 <https://huigeshuo.github.io/bridge-skills/github-guide.html>
+
 ---
 
 ## 〇、先明确三件事
